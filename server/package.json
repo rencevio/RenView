@@ -1,0 +1,25 @@
+{
+  "name": "renview",
+  "version": "0.0.1",
+  "description": "Restaurant review service backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "server": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.toptal.com:screening/maxim-berezhnoy.git"
+  },
+  "author": "Maxim Berezhnoy",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "config": "^3.3.3",
+    "express": "^4.17.1",
+    "express-validator": "^6.7.0",
+    "gravatar": "^1.8.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.2"
+  }
+}
