@@ -6,7 +6,7 @@ const {
   env
 } = require('../../config')
 
-const roles = ['user', 'admin']
+const roles = ['user', 'owner', 'admin']
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     index: true,
+    required: true,
     trim: true
   },
   role: {
@@ -64,7 +65,7 @@ userSchema.pre('save', function (next) {
 userSchema.methods = {
   view(full) {
     const view = {}
-    let fields = ['id', 'name', 'picture']
+    let fields = ['id', 'name', 'picture', 'role']
 
     if (full) {
       fields = [...fields, 'email', 'createdAt']

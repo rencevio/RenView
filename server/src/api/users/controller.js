@@ -31,25 +31,37 @@ exports.showMe = ({
   res.json(user.view(true))
 
 exports.create = ({
-    bodymen: {
-      body
-    }
-  }, res, next) =>
+  bodymen: {
+    body
+  },
+  params,
+  user
+}, res, next) => {
+  const isAdmin = !user ? false : user.role === 'admin'
+
+  if (!isAdmin && body.role == 'admin') {
+    return res.status(401).json({
+      valid: false,
+      message: 'Only admin role can create other admin users'
+    })
+  }
+
   User.create(body)
-  .then((user) => user.view(true))
-  .then(success(res, 201))
-  .catch((err) => {
-    /* istanbul ignore else */
-    if (err.name === 'MongoError' && err.code === 11000) {
-      res.status(409).json({
-        valid: false,
-        param: 'email',
-        message: 'email already registered'
-      })
-    } else {
-      next(err)
-    }
-  })
+    .then((user) => user.view(true))
+    .then(success(res, 201))
+    .catch((err) => {
+      /* istanbul ignore else */
+      if (err.name === 'MongoError' && err.code === 11000) {
+        res.status(409).json({
+          valid: false,
+          param: 'email',
+          message: 'email already registered'
+        })
+      } else {
+        next(err)
+      }
+    })
+}
 
 exports.update = ({
     bodymen: {

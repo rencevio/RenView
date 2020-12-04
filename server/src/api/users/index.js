@@ -83,15 +83,20 @@ router.get('/:id',
  * @apiParam {String} email User's email.
  * @apiParam {String{6..}} password User's password.
  * @apiParam {String} name User's name.
+ * @apiParam {String} role User's role.
  * @apiSuccess (Sucess 201) {Object} user User's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 409 Email already registered.
  */
 router.post('/',
+  token({
+    required: false
+  }),
   body({
     email,
     password,
-    name
+    name,
+    role
   }),
   create)
 
