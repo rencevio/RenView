@@ -3,6 +3,7 @@ const {
 } = require('express')
 const users = require('./users')
 const auth = require('./auth')
+const restaurants = require('./restaurants')
 
 const router = new Router()
 
@@ -26,5 +27,6 @@ const router = new Router()
  */
 router.use('/users', users)
 router.use('/auth', auth)
+router.use('/restaurants', restaurants)
 
 module.exports = router

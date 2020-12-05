@@ -3,6 +3,9 @@ const {
   notFound
 } = require('../../services/response')
 const User = require('./model')
+const {
+  clean
+} = require('../../services/utils')
 
 exports.index = ({
     querymen: {
@@ -83,9 +86,10 @@ exports.update = ({
       })
       return null
     }
+
     return result
   })
-  .then((user) => user ? Object.assign(user, body).save() : null)
+  .then((user) => user ? Object.assign(user, clean(body)).save() : null)
   .then((user) => user ? user.view(true) : null)
   .then(success(res))
   .catch(next)

@@ -144,37 +144,8 @@ test('POST /users 201', async () => {
     .post('')
     .send({
       email: 'd@d.com',
+      name: 'd',
       password: '123456'
-    })
-  expect(status).toBe(201)
-  expect(typeof body).toBe('object')
-  expect(body.email).toBe('d@d.com')
-})
-
-test('POST /users 201', async () => {
-  const {
-    status,
-    body
-  } = await request(app())
-    .post('')
-    .send({
-      email: 'd@d.com',
-      password: '123456',
-    })
-  expect(status).toBe(201)
-  expect(typeof body).toBe('object')
-  expect(body.email).toBe('d@d.com')
-})
-
-test('POST /users 201', async () => {
-  const {
-    status,
-    body
-  } = await request(app())
-    .post('')
-    .send({
-      email: 'd@d.com',
-      password: '123456',
     })
   expect(status).toBe(201)
   expect(typeof body).toBe('object')
@@ -188,6 +159,7 @@ test('POST /users 409 - duplicated email', async () => {
   } = await request(app())
     .post('')
     .send({
+      name: 'd',
       email: 'a@a.com',
       password: '123456'
     })
@@ -203,6 +175,7 @@ test('POST /users 400 - invalid email', async () => {
   } = await request(app())
     .post('')
     .send({
+      name: 'd',
       email: 'invalid',
       password: '123456'
     })
@@ -218,6 +191,7 @@ test('POST /users 400 - missing email', async () => {
   } = await request(app())
     .post('')
     .send({
+      name: 'd',
       password: '123456'
     })
   expect(status).toBe(400)
@@ -232,6 +206,7 @@ test('POST /users 400 - invalid password', async () => {
   } = await request(app())
     .post('')
     .send({
+      name: 'd',
       email: 'd@d.com',
       password: '123'
     })
@@ -247,6 +222,7 @@ test('POST /users 400 - missing password', async () => {
   } = await request(app())
     .post('')
     .send({
+      name: 'd',
       email: 'd@d.com'
     })
   expect(status).toBe(400)
@@ -261,6 +237,7 @@ test('POST /users 201 (admin)', async () => {
     .post('')
     .send({
       access_token: adminSession,
+      name: 'd',
       email: 'd@d.com',
       password: '123456'
     })
@@ -274,18 +251,7 @@ test('POST /users 201 (user)', async () => {
     .post('')
     .send({
       access_token: session1,
-      email: 'd@d.com',
-      password: '123456'
-    })
-  expect(status).toBe(201)
-})
-
-test('POST /users 201', async () => {
-  const {
-    status
-  } = await request(app())
-    .post('')
-    .send({
+      name: 'd',
       email: 'd@d.com',
       password: '123456'
     })
@@ -319,7 +285,7 @@ test('PUT /users/me 200 (user)', async () => {
     })
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
-  expect(body.email).toBe('a@a.com')
+  expect(body.email).toBe('test@test.com')
 })
 
 test('PUT /users/me 401', async () => {
@@ -360,7 +326,7 @@ test('PUT /users/:id 200 (user)', async () => {
     })
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
-  expect(body.email).toBe('a@a.com')
+  expect(body.email).toBe('test@test.com')
 })
 
 test('PUT /users/:id 200 (admin)', async () => {

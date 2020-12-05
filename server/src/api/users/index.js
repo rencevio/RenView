@@ -118,7 +118,14 @@ router.put('/:id',
     required: true
   }),
   body({
-    name,
+    name: {
+      ...name,
+      required: false
+    },
+    email: {
+      ...email,
+      required: false
+    },
     picture
   }),
   update)

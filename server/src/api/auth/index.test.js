@@ -13,6 +13,7 @@ let user
 beforeEach(async () => {
   user = await User.create({
     email: 'a@a.com',
+    name: 'user',
     password: '123456'
   })
 })
