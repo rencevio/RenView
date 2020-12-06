@@ -44,7 +44,7 @@ const config = {
     ip: process.env.IP || undefined,
     port: process.env.PORT || 8080,
     mongo: {
-      uri: process.env.MONGODB_URI || 'mongodb://localhost/ren-view'
+      uri: process.env.MONGODB_URI || 'mongodb+srv://Max:TxAUopN2dz5O7YzH@default.qpa77.mongodb.net/RenView?retryWrites=true&w=majority'
     }
   }
 }

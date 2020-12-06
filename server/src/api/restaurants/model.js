@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Review = require('../reviews/model')
 
 const restaurantsSchema = new mongoose.Schema({
   owner: {
@@ -26,17 +27,26 @@ const restaurantsSchema = new mongoose.Schema({
 
 restaurantsSchema.methods = {
   view(full) {
-    const view = {
-      id: this.id,
-      owner: this.owner.view(full),
-      name: this.name,
-      address: this.address
-    }
+    return Review.find({
+      restaurant: {
+        $eq: this.id
+      }
+    }).then((reviews) => {
+      const averageRating = reviews.map((r) => r.rating).reduce((r1, r2) => r1 + r2, 0) / reviews.length || 0
 
-    return full ? {
-      ...view
-    } : view
+      const view = {
+        id: this.id,
+        owner: this.owner.view(full),
+        name: this.name,
+        address: this.address,
+        averageRating: averageRating
+      }
+
+      return full ? {
+        ...view
+      } : view
+    })
   }
 }
 
-module.exports = Restaurants = mongoose.model('Restaurants', restaurantsSchema)
+module.exports = Restaurant = mongoose.model('Restaurants', restaurantsSchema)

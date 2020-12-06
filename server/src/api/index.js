@@ -4,6 +4,7 @@ const {
 const users = require('./users')
 const auth = require('./auth')
 const restaurants = require('./restaurants')
+const reviews = require('./reviews')
 
 const router = new Router()
 
@@ -28,5 +29,6 @@ const router = new Router()
 router.use('/users', users)
 router.use('/auth', auth)
 router.use('/restaurants', restaurants)
+router.use('/reviews', reviews)
 
 module.exports = router

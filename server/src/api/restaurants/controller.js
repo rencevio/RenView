@@ -3,7 +3,7 @@ const {
   notFound,
   authorOrAdmin
 } = require('../../services/response/')
-const Restaurants = require('./model')
+const Restaurant = require('./model')
 const {
   clean
 } = require('../../services/utils')
@@ -21,11 +21,11 @@ exports.create = ({
     })
   }
 
-  Restaurants.create({
+  Restaurant.create({
       ...body,
       owner: user
     })
-    .then((restaurants) => restaurants.view(true))
+    .then(async (restaurants) => await restaurants.view(true))
     .then(success(res, 201))
     .catch(next)
 }
@@ -37,19 +37,19 @@ exports.index = ({
       cursor
     }
   }, res, next) =>
-  Restaurants.find(query, select, cursor)
+  Restaurant.find(query, select, cursor)
   .populate('owner')
-  .then((restaurants) => restaurants.map((restaurants) => restaurants.view()))
+  .then(async (restaurants) => await Promise.all(restaurants.map((restaurants) => restaurants.view())))
   .then(success(res))
   .catch(next)
 
 exports.show = ({
     params
   }, res, next) =>
-  Restaurants.findById(params.id)
+  Restaurant.findById(params.id)
   .populate('owner')
   .then(notFound(res))
-  .then((restaurants) => restaurants ? restaurants.view() : null)
+  .then(async (restaurants) => restaurants ? await restaurants.view() : null)
   .then(success(res))
   .catch(next)
 
@@ -60,12 +60,12 @@ exports.update = ({
     },
     params
   }, res, next) =>
-  Restaurants.findById(params.id)
+  Restaurant.findById(params.id)
   .populate('owner')
   .then(notFound(res))
   .then(authorOrAdmin(res, user, 'owner'))
   .then((restaurants) => restaurants ? Object.assign(restaurants, clean(body)).save() : null)
-  .then((restaurants) => restaurants ? restaurants.view(true) : null)
+  .then(async (restaurants) => restaurants ? await restaurants.view(true) : null)
   .then(success(res))
   .catch(next)
 
@@ -73,7 +73,7 @@ exports.destroy = ({
     user,
     params
   }, res, next) =>
-  Restaurants.findById(params.id)
+  Restaurant.findById(params.id)
   .then(notFound(res))
   .then(authorOrAdmin(res, user, 'owner'))
   .then((restaurants) => restaurants ? restaurants.remove() : null)

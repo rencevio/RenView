@@ -1,4 +1,4 @@
-const Restaurants = require('./model')
+const Restaurant = require('./model')
 const User = require('../users/model')
 
 let user, restaurants
@@ -9,7 +9,7 @@ beforeEach(async () => {
     name: 'user',
     password: '123456'
   })
-  restaurants = await Restaurants.create({
+  restaurants = await Restaurant.create({
     owner: user,
     name: 'test',
     address: 'test'
@@ -17,8 +17,8 @@ beforeEach(async () => {
 })
 
 describe('view', () => {
-  it('returns simple view', () => {
-    const view = restaurants.view()
+  it('returns simple view', async () => {
+    const view = await restaurants.view()
     expect(typeof view).toBe('object')
     expect(view.id).toBe(restaurants.id)
     expect(typeof view.owner).toBe('object')
@@ -27,8 +27,8 @@ describe('view', () => {
     expect(view.address).toBe(restaurants.address)
   })
 
-  it('returns full view', () => {
-    const view = restaurants.view(true)
+  it('returns full view', async () => {
+    const view = await restaurants.view(true)
     expect(typeof view).toBe('object')
     expect(view.id).toBe(restaurants.id)
     expect(typeof view.owner).toBe('object')
