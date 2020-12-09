@@ -14,15 +14,22 @@ import 'src/persistent_state.dart';
 import 'src/state.dart';
 import 'src/store.dart';
 
+class Dependencies {
+  AppStateStore store;
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final dependencies = Dependencies();
 
   final persistency = Persistency();
   final initialState = await loadAppState(persistency);
 
-  final communicator = Communicator();
+  final communicator = Communicator(getSessionToken: () => dependencies.store.state.communicatorState.sessionToken);
+  final dispatcher = Dispatcher((dynamic action) => dependencies.store.dispatch(action));
 
-  final store = AppStateStore(
+  dependencies.store = AppStateStore(
     initialState: initialState,
     middleware: [
       ...communicatorMiddleware(communicator: communicator),
@@ -30,11 +37,9 @@ Future<void> main() async {
     ],
   );
 
-  final dispatcher = Dispatcher(store.dispatch);
+  bindPersistencyToStore(persistency, dependencies.store);
 
-  bindPersistencyToStore(persistency, store);
-
-  start(store, dispatcher);
+  start(dependencies.store, dispatcher);
 }
 
 Future<AppState> loadAppState(Persistency persistency) async {
@@ -50,6 +55,7 @@ Future<AppState> loadAppState(Persistency persistency) async {
 Future<Map<String, dynamic>> loadPersistedData(Persistency persistency) async {
   try {
     final persistedData = await persistency.load();
+    print(persistedData);
     return json.decode(persistedData) as Map<String, dynamic>;
   } on Exception {
     return <String, dynamic>{};

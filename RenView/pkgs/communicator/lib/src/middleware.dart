@@ -10,6 +10,8 @@ List<Middleware<State>> communicatorMiddleware<State>({
       (Store<State> store, dynamic action, NextDispatcher next) {
         if (action is LoginAction) {
           communicator.login(
+            email: action.email,
+            password: action.password,
             onSuccess: (token) => store.dispatch(LoginSuccessfulAction(token: token)),
             onError: (reason) => store.dispatch(LoginFailedAction(reason: reason)),
           );
