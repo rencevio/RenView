@@ -1,0 +1,27 @@
+name: communicator
+description: Handles communication with remote API
+version: 0.0.1
+author:
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  redux:
+  plain_optional:
+  json_annotation:
+  functional_data:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  build_runner:
+  functional_data_generator:
+  json_serializable:
+
+flutter:
