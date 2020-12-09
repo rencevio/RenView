@@ -17,12 +17,16 @@ dependencies:
   functional_data:
   plain_optional:
   rxdart:
+  provider:
 
   communicator:
     path: pkgs/communicator
-
   persistency:
     path: pkgs/persistency
+  login:
+    path: pkgs/login
+  utils:
+    path: pkgs/utils
 
 dev_dependencies:
   flutter_test:

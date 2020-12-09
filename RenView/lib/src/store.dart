@@ -1,4 +1,5 @@
 import 'package:communicator/communicator.dart';
+import 'package:login/login.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 
@@ -15,6 +16,10 @@ class AppStateStore extends Store<AppState> {
         );
 }
 
-AppState _reducer(AppState state, dynamic action) => AppState(
+AppState _reducer(AppState state, dynamic action) {
+  print(action);
+  return AppState(
       communicatorState: communicatorReducer(state.communicatorState, action),
+      loginState: loginReducer(state.loginState, action),
     );
+}

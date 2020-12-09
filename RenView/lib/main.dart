@@ -1,28 +1,40 @@
 import 'dart:convert';
 
-import 'package:RenView/src/persistent_state.dart';
-import 'package:RenView/src/store.dart';
+import 'package:collection/collection.dart';
 import 'package:communicator/communicator.dart';
 import 'package:flutter/material.dart';
+import 'package:login/login.dart';
 import 'package:persistency/persistency.dart';
+import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:utils/utils.dart';
 
+import 'src/app.dart';
+import 'src/persistent_state.dart';
 import 'src/state.dart';
+import 'src/store.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   final persistency = Persistency();
   final initialState = await loadAppState(persistency);
+
+  final communicator = Communicator();
 
   final store = AppStateStore(
     initialState: initialState,
     middleware: [
-      ...communicatorMiddleware(),
+      ...communicatorMiddleware(communicator: communicator),
+      ...loginMiddleware(),
     ],
   );
 
+  final dispatcher = Dispatcher(store.dispatch);
+
   bindPersistencyToStore(persistency, store);
 
-  runApp(MyApp());
+  start(store, dispatcher);
 }
 
 Future<AppState> loadAppState(Persistency persistency) async {
@@ -37,8 +49,8 @@ Future<AppState> loadAppState(Persistency persistency) async {
 
 Future<Map<String, dynamic>> loadPersistedData(Persistency persistency) async {
   try {
-    final persistedData = persistency.load();
-    return persistedData as Map<String, dynamic>;
+    final persistedData = await persistency.load();
+    return json.decode(persistedData) as Map<String, dynamic>;
   } on Exception {
     return <String, dynamic>{};
   }
@@ -54,21 +66,19 @@ void bindPersistencyToStore(Persistency persistency, AppStateStore store) => sto
       ),
     );
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: const MyHomePage(),
-      );
+void start(AppStateStore store, Dispatcher dispatcher) {
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider.value(value: dispatcher),
+        fromStore<LoginState>(store, (state) => state.loginState),
+      ],
+      child: RenView(),
+    ),
+  );
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage();
-
-  @override
-  Widget build(BuildContext context) => const SizedBox();
-}
+StreamProvider<T> fromStore<T>(AppStateStore store, T Function(AppState) convert) => StreamProvider<T>(
+      create: (context) => store.onChange.map(convert).distinct(const DeepCollectionEquality().equals),
+      initialData: convert(store.state),
+    );

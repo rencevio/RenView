@@ -17,7 +17,7 @@ class PersistentAppState extends $PersistentAppState {
   PersistentAppState.fromState(AppState state)
       : this(communicatorState: CommunicatorPersistentState.fromState(state.communicatorState));
 
-  AppState toState() => AppState(communicatorState: communicatorState.toState());
+  AppState toState() => AppState.initial().copyWith(communicatorState: communicatorState.toState());
 
   factory PersistentAppState.fromJson(Map<String, dynamic> json) =>
       _$PersistentAppStateFromJson(json);

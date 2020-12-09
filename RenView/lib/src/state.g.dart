@@ -13,18 +13,25 @@ part of 'state.dart';
 abstract class $AppState {
   const $AppState();
   CommunicatorState get communicatorState;
-  AppState copyWith({CommunicatorState communicatorState}) =>
-      AppState(communicatorState: communicatorState ?? this.communicatorState);
+  LoginState get loginState;
+  AppState copyWith(
+          {CommunicatorState communicatorState, LoginState loginState}) =>
+      AppState(
+          communicatorState: communicatorState ?? this.communicatorState,
+          loginState: loginState ?? this.loginState);
   @override
-  String toString() => "AppState(communicatorState: $communicatorState)";
+  String toString() =>
+      "AppState(communicatorState: $communicatorState, loginState: $loginState)";
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
-      communicatorState == other.communicatorState;
+      communicatorState == other.communicatorState &&
+      loginState == other.loginState;
   @override
   int get hashCode {
     var result = 17;
     result = 37 * result + communicatorState.hashCode;
+    result = 37 * result + loginState.hashCode;
     return result;
   }
 }
@@ -34,4 +41,6 @@ class AppState$ {
       (s_) => s_.communicatorState,
       (s_, communicatorState) =>
           s_.copyWith(communicatorState: communicatorState));
+  static final loginState = Lens<AppState, LoginState>((s_) => s_.loginState,
+      (s_, loginState) => s_.copyWith(loginState: loginState));
 }
