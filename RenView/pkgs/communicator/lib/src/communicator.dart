@@ -36,7 +36,7 @@ class Communicator {
       final token = response.body['token'] as String;
 
       onSuccess(token);
-    } on InvalidResponseException catch(e) {
+    } on InvalidResponseException catch (e) {
       if (e.response.statusCode == 401) {
         onError(LoginFailureReason.wrongCredentials);
       } else {
@@ -44,6 +44,32 @@ class Communicator {
       }
     } on Exception {
       onError(LoginFailureReason.unknown);
+    }
+  }
+
+  Future<void> register({
+    @required String name,
+    @required bool isOwner,
+    @required String email,
+    @required String password,
+    @required void Function() onSuccess,
+    @required void Function() onError,
+  }) async {
+    final request = requestBuilder.build(
+      endpoint: 'users',
+      body: <String, dynamic>{
+        'email': email,
+        'name': name,
+        'password': password,
+        'role': isOwner ? 'owner' : 'user',
+      },
+    );
+
+    try {
+      await httpClient.request('POST', request);
+      onSuccess();
+    } on Exception {
+      onError();
     }
   }
 

@@ -7,16 +7,39 @@ part 'state.g.dart';
 
 enum LoginProcess {
   idle,
+  registrationSuccessful,
   started,
   failedWrongCredentials,
   failedUnknown,
 }
 
+enum RegistrationProcess {
+  idle,
+  started,
+  failed,
+}
+
+enum LoginStage {
+  login,
+  registration,
+}
+
 @FunctionalData()
 class LoginState extends $LoginState {
-  LoginState({@required this.loginProcess});
+  LoginState({
+    @required this.stage,
+    @required this.loginProcess,
+    @required this.registrationProcess,
+  });
 
-  LoginState.initial() : this(loginProcess: LoginProcess.idle);
+  LoginState.initial()
+      : this(
+          stage: LoginStage.login,
+          loginProcess: LoginProcess.idle,
+          registrationProcess: RegistrationProcess.idle,
+        );
 
+  final LoginStage stage;
   final LoginProcess loginProcess;
+  final RegistrationProcess registrationProcess;
 }

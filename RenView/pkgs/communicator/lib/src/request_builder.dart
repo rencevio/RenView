@@ -51,6 +51,7 @@ class RequestBuilder {
 
   Request build({
     @required String endpoint,
+    Map<String, dynamic> body,
   }) =>
       Request(
         url: Uri.parse(
@@ -60,6 +61,7 @@ class RequestBuilder {
           ].join('/'),
         ),
         headers: {},
+        body: body,
       );
 
   final Optional<String> Function() getSessionToken;

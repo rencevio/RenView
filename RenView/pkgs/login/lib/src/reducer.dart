@@ -17,6 +17,22 @@ LoginState loginReducer(LoginState state, dynamic action) {
     }
   } else if (action is LoginSuccessfulAction) {
     return state.copyWith(loginProcess: LoginProcess.idle);
+  } else if (action is ChangeLoginStageAction) {
+    return state.copyWith(
+      stage: action.stage,
+      loginProcess: LoginProcess.idle,
+      registrationProcess: RegistrationProcess.idle,
+    );
+  } else if (action is StartRegistrationAction) {
+    return state.copyWith(registrationProcess: RegistrationProcess.started);
+  } else if (action is RegistrationFailedAction) {
+    return state.copyWith(registrationProcess: RegistrationProcess.failed);
+  } else if (action is RegistrationSuccessfulAction) {
+    return state.copyWith(
+      registrationProcess: RegistrationProcess.idle,
+      loginProcess: LoginProcess.registrationSuccessful,
+      stage: LoginStage.login,
+    );
   }
 
   return state;

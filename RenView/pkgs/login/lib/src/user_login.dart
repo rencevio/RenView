@@ -7,13 +7,12 @@ import 'package:utils/utils.dart';
 import 'actions.dart';
 import 'state.dart';
 
-
-class Login extends StatefulWidget {
+class UserLogin extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _UserLoginState createState() => _UserLoginState();
 }
 
-class _LoginState extends State<Login> {
+class _UserLoginState extends State<UserLogin> {
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -36,12 +35,16 @@ class _LoginState extends State<Login> {
                         autocorrect: false,
                         controller: nameController,
                         decoration: const InputDecoration(labelText: 'Email'),
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
                         validator: (value) => value.contains('@') ? null : 'Incorrect email',
                       ),
+                      const SizedBox(height: 10),
                       TextFormField(
                         autocorrect: false,
                         obscureText: true,
                         controller: passwordController,
+                        textInputAction: TextInputAction.done,
                         decoration: const InputDecoration(labelText: 'Password'),
                         validator: (value) => value.isEmpty ? 'Password cannot be empty' : null,
                       ),
@@ -49,18 +52,37 @@ class _LoginState extends State<Login> {
                       if (loginState.loginProcess == LoginProcess.started)
                         const CupertinoActivityIndicator()
                       else
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState.validate()) {
-                              dispatcher(
-                                StartLoginAction(
-                                  email: nameController.text,
-                                  password: passwordController.text,
-                                ),
-                              );
-                            }
-                          },
-                          child: const Text('Login'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+                                  dispatcher(ChangeLoginStageAction(stage: LoginStage.registration));
+                                },
+                                child: const Text('Register'),
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+
+                                  if (_formKey.currentState.validate()) {
+                                    dispatcher(
+                                      StartLoginAction(
+                                        email: nameController.text,
+                                        password: passwordController.text,
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: const Text('Login'),
+                              ),
+                            ),
+                          ],
                         ),
                       Visibility(
                         visible: loginState.loginProcess == LoginProcess.failedWrongCredentials ||
@@ -73,6 +95,18 @@ class _LoginState extends State<Login> {
                                   ? 'Incorrect email or password.'
                                   : 'Something went wrong, please try again',
                               style: const TextStyle(color: Colors.red),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Visibility(
+                        visible: loginState.loginProcess == LoginProcess.registrationSuccessful,
+                        child: Column(
+                          children: const [
+                            SizedBox(height: 10),
+                            Text(
+                              'Registration successful, you can now log in.',
+                              style: TextStyle(color: Colors.green),
                             ),
                           ],
                         ),

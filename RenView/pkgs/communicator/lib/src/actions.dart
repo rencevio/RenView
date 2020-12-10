@@ -26,3 +26,23 @@ class LoginSuccessfulAction {
 
   final String token;
 }
+
+class RegisterAction {
+  const RegisterAction({
+    @required this.name,
+    @required this.email,
+    @required this.password,
+    @required this.isOwner,
+  });
+
+  final String name;
+  final String email;
+  final String password;
+  final bool isOwner;
+}
+
+class RegistrationFailedAction {}
+
+class RegistrationSuccessfulAction {
+  RegistrationSuccessfulAction();
+}

@@ -15,6 +15,15 @@ List<Middleware<State>> communicatorMiddleware<State>({
             onSuccess: (token) => store.dispatch(LoginSuccessfulAction(token: token)),
             onError: (reason) => store.dispatch(LoginFailedAction(reason: reason)),
           );
+        } else if (action is RegisterAction) {
+          communicator.register(
+            name: action.name,
+            isOwner: action.isOwner,
+            email: action.email,
+            password: action.password,
+            onSuccess: () => store.dispatch(RegistrationSuccessfulAction()),
+            onError: () => store.dispatch(RegistrationFailedAction()),
+          );
         }
 
         next(action);
