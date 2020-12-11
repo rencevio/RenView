@@ -5,9 +5,10 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'dashboard_action_sheet.dart';
-import 'filter_dialog.dart';
+import 'dialogs/filter_dialog.dart';
 import 'owner_control_header.dart';
 import 'restaurant_list.dart';
+import 'style.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) => Consumer<UserIdentity>(
         builder: (context, userIdentity, _) => Scaffold(
           appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(45),
+            preferredSize: const Size.fromHeight(Style.appBarHeight),
             child: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.filter_alt_outlined),

@@ -84,3 +84,23 @@ class RestaurantCreatedAction {
 
   final RestaurantIdentity restaurant;
 }
+
+class EditRestaurantAction {
+  EditRestaurantAction({
+    @required this.id,
+    this.name,
+    this.address,
+  }) : assert(name != null || address != null);
+
+  final String id;
+  final String name;
+  final String address;
+}
+
+class DeleteRestaurantAction {
+  DeleteRestaurantAction({
+    @required this.id,
+  });
+
+  final String id;
+}

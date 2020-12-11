@@ -1,4 +1,3 @@
-import 'package:common_state/common_state.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 
@@ -53,6 +52,10 @@ Future<void> _middleware<State>(Store<State> store, dynamic action, Communicator
   } else if (action is CreateRestaurantAction) {
     final restaurant = await communicator.createRestaurant(name: action.name, address: action.address);
     store.dispatch(RestaurantCreatedAction(restaurant: restaurant.identity));
+  } else if (action is EditRestaurantAction) {
+    await communicator.editRestaurant(id: action.id, name: action.name, address: action.address);
+  } else if (action is DeleteRestaurantAction) {
+    await communicator.deleteRestaurant(id: action.id);
   }
 }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'create_restaurant_creation_dialog.dart';
+import 'dialogs/restaurant_creation_dialog.dart';
 import 'style.dart';
 
 class OwnerControlHeader extends StatelessWidget {

@@ -44,7 +44,6 @@ class _CreateRestaurantDialogState extends State<CreateRestaurantDialog> {
           ],
           content: Builder(
             builder: (context) {
-              final height = MediaQuery.of(context).size.height;
               final width = MediaQuery.of(context).size.width;
 
               return Form(

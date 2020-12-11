@@ -9,6 +9,7 @@ import '../actions.dart';
 import '../state.dart';
 import '../utils.dart';
 import 'elements.dart';
+import 'restaurant_details/restaurant_details.dart';
 
 class FilterCriteria {
   FilterCriteria({
@@ -63,6 +64,11 @@ class _RestaurantListState extends State<RestaurantList> {
                               padding: const EdgeInsets.only(bottom: 20),
                               child: ListTile(
                                 title: RestaurantName(restaurant.name),
+                                onTap: () => Navigator.of(context).push<void>(
+                                  MaterialPageRoute(
+                                    builder: (context) => RestaurantDetails(restaurantId: restaurant.id),
+                                  ),
+                                ),
                                 subtitle: Padding(
                                   padding: const EdgeInsets.only(top: 10, left: 10),
                                   child: RestaurantAddress(restaurant.address),

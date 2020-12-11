@@ -10,6 +10,13 @@ DashboardState dashboardReducer(DashboardState state, dynamic action) {
     return state.copyWith(refreshingRestaurantList: true);
   } else if (action is RestaurantCreatedAction) {
     return state.copyWith(restaurants: state.restaurants.followedBy([action.restaurant]).toList(growable: false));
+  } else if (action is EditRestaurantAction) {
+    return state.copyWith(
+        restaurants: state.restaurants
+            .map((r) => r.id == action.id ? r.copyWith(name: action.name, address: action.address) : r)
+            .toList(growable: false));
+  } else if (action is DeleteRestaurantAction) {
+    return state.copyWith(restaurants: state.restaurants.where((r) => r.id != action.id).toList(growable: false));
   }
 
   return state;

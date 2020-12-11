@@ -84,17 +84,45 @@ class Communicator {
     @required String address,
   }) async {
     final request = requestBuilder.build(
-     endpoint: 'restaurants',
-     authorized: true,
-     body: <String, dynamic>{
-       'name': name,
-       'address': address,
-     },
+      endpoint: 'restaurants',
+      authorized: true,
+      body: <String, dynamic>{
+        'name': name,
+        'address': address,
+      },
     );
 
     final response = await httpClient.request('POST', request);
 
     return Restaurant.fromJson(response.body as Map<String, dynamic>);
+  }
+
+  Future<void> editRestaurant({
+    @required String id,
+    String name,
+    String address,
+  }) async {
+    final request = requestBuilder.build(
+      endpoint: 'restaurants/$id',
+      authorized: true,
+      body: <String, dynamic>{
+        if (name != null) 'name': name,
+        if (address != null) 'address': address,
+      },
+    );
+
+    await httpClient.request('PUT', request);
+  }
+
+  Future<void> deleteRestaurant({
+    @required String id,
+  }) async {
+    final request = requestBuilder.build(
+      endpoint: 'restaurants/$id',
+      authorized: true,
+    );
+
+    await httpClient.request('DELETE', request);
   }
 
   final RequestBuilder requestBuilder;

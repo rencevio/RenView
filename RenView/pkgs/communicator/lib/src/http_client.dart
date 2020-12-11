@@ -34,7 +34,9 @@ class HttpClient {
     Request request,
   ) async {
     final httpResponse = await http.Response.fromStream(await _client.send(request.asHttpRequest(method)));
-    final dynamic body = json.decode(httpResponse.body);
+
+    final dynamic body =
+        httpResponse.body != null && httpResponse.body.isNotEmpty ? json.decode(httpResponse.body) : null;
 
     final response = HttpResponse(
       requestURL: request.url,
