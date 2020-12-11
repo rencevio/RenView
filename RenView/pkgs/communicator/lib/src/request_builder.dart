@@ -47,22 +47,44 @@ class Request extends $Request {
 class RequestBuilder {
   static const serverURL = ServerURL.heroku;
 
-  RequestBuilder({@required this.getSessionToken});
+  RequestBuilder({this.getSessionToken});
 
   Request build({
+    @required bool authorized,
     @required String endpoint,
+    Map<String, String> customHeaders = const {},
+    Map<String, String> customQueryParameters = const {},
     Map<String, dynamic> body,
-  }) =>
-      Request(
-        url: Uri.parse(
-          [
-            serverURL,
-            endpoint,
-          ].join('/'),
-        ),
-        headers: {},
-        body: body,
-      );
+  }) {
+    final queryParameters = {
+      if (authorized) 'access_token': _sessionToken,
+      ...customQueryParameters,
+    };
+
+    var url = [
+      serverURL,
+      endpoint,
+    ].join('/');
+
+    if (queryParameters.isNotEmpty) {
+      url += '?${queryParameters.entries.map((e) => '${e.key}=${e.value}').join('&')}';
+    }
+
+    return Request(
+      url: Uri.parse(url),
+      headers: {
+        ...customHeaders,
+      },
+      body: body,
+    );
+  }
+
+  String get _sessionToken {
+    final token = getSessionToken();
+    assert(token.hasValue, 'Session token is not available while building authorized request');
+
+    return token.unsafe;
+  }
 
   final Optional<String> Function() getSessionToken;
 }

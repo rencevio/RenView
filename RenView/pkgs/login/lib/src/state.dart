@@ -26,13 +26,13 @@ enum LoginStage {
 
 @FunctionalData()
 class LoginState extends $LoginState {
-  LoginState({
+  const LoginState({
     @required this.stage,
     @required this.loginProcess,
     @required this.registrationProcess,
   });
 
-  LoginState.initial()
+  const LoginState.initial()
       : this(
           stage: LoginStage.login,
           loginProcess: LoginProcess.idle,

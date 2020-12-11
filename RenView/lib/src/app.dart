@@ -1,6 +1,13 @@
+import 'package:dashboard/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:login/login.dart';
+import 'package:provider/provider.dart';
+
+enum AppStage {
+  login,
+  dashboard,
+}
 
 class RenView extends StatelessWidget {
   @override
@@ -18,7 +25,16 @@ class RenView extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: Material(
-          child: Login(),
+          child: Consumer<AppStage>(builder: (context, appStage, _) {
+            switch (appStage) {
+              case AppStage.login:
+                return Login();
+              case AppStage.dashboard:
+                return Dashboard();
+            }
+
+            return null;
+          }),
         ),
       );
 }

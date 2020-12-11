@@ -18,13 +18,18 @@ dependencies:
   plain_optional:
   rxdart:
   provider:
+  redux:
 
   communicator:
     path: pkgs/communicator
   persistency:
     path: pkgs/persistency
+  common_state:
+    path: pkgs/common_state
   login:
     path: pkgs/login
+  dashboard:
+    path: pkgs/dashboard
   utils:
     path: pkgs/utils
 

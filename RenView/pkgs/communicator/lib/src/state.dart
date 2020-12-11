@@ -12,7 +12,7 @@ class CommunicatorState extends $CommunicatorState {
     @required this.sessionToken,
   });
 
-  CommunicatorState.initial() : this(sessionToken: const Optional.none());
+  const CommunicatorState.initial() : this(sessionToken: const Optional.none());
 
   final Optional<String> sessionToken;
 }

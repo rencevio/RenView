@@ -1,3 +1,4 @@
+import 'package:common_state/common_state.dart';
 import 'package:meta/meta.dart';
 
 class LoginAction {
@@ -22,8 +23,12 @@ class LoginFailedAction {
 }
 
 class LoginSuccessfulAction {
-  LoginSuccessfulAction({@required this.token});
+  LoginSuccessfulAction({
+    @required this.userIdentity,
+    @required this.token,
+  });
 
+  final UserIdentity userIdentity;
   final String token;
 }
 
@@ -45,4 +50,22 @@ class RegistrationFailedAction {}
 
 class RegistrationSuccessfulAction {
   RegistrationSuccessfulAction();
+}
+
+class FetchRestaurantsForUserAction {}
+
+class FetchRestaurantsForOwnerAction {
+  FetchRestaurantsForOwnerAction({
+    @required this.ownerId,
+  });
+
+  final String ownerId;
+}
+
+class RestaurantsFetchedAction {
+  RestaurantsFetchedAction({
+    @required this.restaurants,
+  });
+
+  final List<RestaurantIdentity> restaurants;
 }

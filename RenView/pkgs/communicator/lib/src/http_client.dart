@@ -22,7 +22,7 @@ class HttpResponse {
   });
 
   final Uri requestURL;
-  final Map<String, dynamic> body;
+  final dynamic body;
   final int statusCode;
 }
 
@@ -34,7 +34,7 @@ class HttpClient {
     Request request,
   ) async {
     final httpResponse = await http.Response.fromStream(await _client.send(request.asHttpRequest(method)));
-    final body = json.decode(httpResponse.body) as Map<String, dynamic>;
+    final dynamic body = json.decode(httpResponse.body);
 
     final response = HttpResponse(
       requestURL: request.url,

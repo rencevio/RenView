@@ -1,3 +1,4 @@
+import 'package:common_state/common_state.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 
@@ -12,7 +13,15 @@ List<Middleware<State>> communicatorMiddleware<State>({
           communicator.login(
             email: action.email,
             password: action.password,
-            onSuccess: (token) => store.dispatch(LoginSuccessfulAction(token: token)),
+            onSuccess: ({user, token}) => store.dispatch(LoginSuccessfulAction(
+              userIdentity: UserIdentity(
+                id: user.id,
+                email: user.name,
+                name: user.email,
+                role: UserRole.fromString(user.role),
+              ),
+              token: token,
+            )),
             onError: (reason) => store.dispatch(LoginFailedAction(reason: reason)),
           );
         } else if (action is RegisterAction) {
@@ -24,8 +33,38 @@ List<Middleware<State>> communicatorMiddleware<State>({
             onSuccess: () => store.dispatch(RegistrationSuccessfulAction()),
             onError: () => store.dispatch(RegistrationFailedAction()),
           );
+        } else if (action is FetchRestaurantsForUserAction) {
+          _fetchRestaurants(communicator: communicator, dispatcher: store.dispatch);
+        } else if (action is FetchRestaurantsForOwnerAction) {
+          _fetchRestaurants(ownerId: action.ownerId, communicator: communicator, dispatcher: store.dispatch);
         }
 
         next(action);
       },
     ];
+
+void _fetchRestaurants({
+  @required Communicator communicator,
+  @required void Function(dynamic) dispatcher,
+  String ownerId,
+}) =>
+    communicator.fetchRestaurants(
+      ownerId: ownerId,
+      onSuccess: (restaurants) => dispatcher(
+        RestaurantsFetchedAction(
+          restaurants: restaurants.restaurants
+              .map(
+                (r) => RestaurantIdentity(
+                  id: r.id,
+                  address: r.address,
+                  name: r.name,
+                  averageRating: r.averageRating,
+                ),
+              )
+              .toList(growable: false),
+        ),
+      ),
+      onError: () {
+        print('Restaurant fetch failed!');
+      },
+    );

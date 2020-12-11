@@ -1,0 +1,33 @@
+name: dashboard
+description: Restaurant dashboard
+version: 0.0.1
+author:
+homepage:
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  common_state:
+    path: ../common_state
+  communicator:
+    path: ../communicator
+  functional_data:
+  provider:
+  redux:
+  build_runner:
+  functional_data_generator:
+  pull_to_refresh:
+  utils:
+    path: ../utils
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  assets:
+    - assets/
