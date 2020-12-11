@@ -10,19 +10,27 @@ import '../state.dart';
 import '../utils.dart';
 import 'elements.dart';
 
-class UserDashboard extends StatefulWidget {
-  @override
-  _UserDashboardState createState() => _UserDashboardState();
+class FilterCriteria {
+  FilterCriteria({
+    @required this.rating,
+  }) : assert(rating >= 0 && rating <= 5);
+
+  final int rating;
 }
 
-class _UserDashboardState extends State<UserDashboard> {
+class RestaurantList extends StatefulWidget {
+  @override
+  _RestaurantListState createState() => _RestaurantListState();
+}
+
+class _RestaurantListState extends State<RestaurantList> {
   final _refreshController = RefreshController();
 
   void _onRefresh(Dispatcher dispatcher) => dispatcher(FetchRestaurantsAction());
 
   @override
-  Widget build(BuildContext context) => Consumer2<Dispatcher, DashboardState>(
-        builder: (context, dispatcher, state, _) {
+  Widget build(BuildContext context) => Consumer3<Dispatcher, DashboardState, FilterCriteria>(
+        builder: (context, dispatcher, state, filerCriteria, _) {
           var firstFetch = false;
 
           if (_refreshController.isRefresh && !state.refreshingRestaurantList) {
@@ -49,6 +57,7 @@ class _UserDashboardState extends State<UserDashboard> {
                     onRefresh: () => _onRefresh(dispatcher),
                     child: ListView(
                       children: orderRestaurants(state.restaurants, orderCriteria: OrderCriteria.averageRating)
+                          .where((r) => r.averageRating >= filerCriteria.rating)
                           .map(
                             (restaurant) => Padding(
                               padding: const EdgeInsets.only(top: 20),
