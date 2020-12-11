@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../style.dart';
+import 'style.dart';
 
 class RestaurantName extends StatelessWidget {
   const RestaurantName(

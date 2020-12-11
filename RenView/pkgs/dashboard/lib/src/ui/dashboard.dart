@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:utils/utils.dart';
 
 import 'dashboard_action_sheet.dart';
 import 'filter_dialog.dart';
+import 'owner_control_header.dart';
 import 'restaurant_list.dart';
 
 class Dashboard extends StatefulWidget {
@@ -50,7 +50,22 @@ class _DashboardState extends State<Dashboard> {
           body: SafeArea(
             child: Provider.value(
               value: _filterCriteria,
-              child: RestaurantList(),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  children: [
+                    if (userIdentity.role == UserRole.owner) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, bottom: 5),
+                        child: OwnerControlHeader(),
+                      ),
+                      const Divider(),
+                    ],
+                    const SizedBox(height: 10),
+                    Expanded(child: RestaurantList()),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

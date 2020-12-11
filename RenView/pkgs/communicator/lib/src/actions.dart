@@ -1,6 +1,8 @@
 import 'package:common_state/common_state.dart';
 import 'package:meta/meta.dart';
 
+import 'api_call_results.dart';
+
 class LoginAction {
   const LoginAction({
     @required this.email,
@@ -9,11 +11,6 @@ class LoginAction {
 
   final String email;
   final String password;
-}
-
-enum LoginFailureReason {
-  wrongCredentials,
-  unknown,
 }
 
 class LoginFailedAction {
@@ -68,4 +65,22 @@ class RestaurantsFetchedAction {
   });
 
   final List<RestaurantIdentity> restaurants;
+}
+
+class CreateRestaurantAction {
+  CreateRestaurantAction({
+    @required this.name,
+    @required this.address,
+  });
+
+  final String name;
+  final String address;
+}
+
+class RestaurantCreatedAction {
+  RestaurantCreatedAction({
+    @required this.restaurant,
+  });
+
+  final RestaurantIdentity restaurant;
 }

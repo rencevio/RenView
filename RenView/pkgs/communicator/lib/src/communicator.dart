@@ -4,7 +4,7 @@ import 'dart:io' as io show HttpHeaders;
 import 'package:meta/meta.dart';
 import 'package:plain_optional/plain_optional.dart';
 
-import '../communicator.dart';
+import 'api_call_results.dart';
 import 'http_client.dart';
 import 'models.dart';
 import 'request_builder.dart';
@@ -15,11 +15,9 @@ class Communicator {
   })  : requestBuilder = RequestBuilder(getSessionToken: getSessionToken),
         httpClient = HttpClient();
 
-  Future<void> login({
+  Future<LoginResponse> login({
     @required String email,
     @required String password,
-    @required void Function({User user, String token}) onSuccess,
-    @required void Function(LoginFailureReason) onError,
   }) async {
     final request = requestBuilder.build(
       endpoint: 'auth',
@@ -33,15 +31,15 @@ class Communicator {
       final token = response.body['token'] as String;
       final user = User.fromJson(response.body['user'] as Map<String, dynamic>);
 
-      onSuccess(token: token, user: user);
+      return LoginResponse(token: token, user: user);
     } on InvalidResponseException catch (e) {
       if (e.response.statusCode == 401) {
-        onError(LoginFailureReason.wrongCredentials);
+        throw LoginException(reason: LoginFailureReason.wrongCredentials);
       } else {
-        onError(LoginFailureReason.unknown);
+        throw LoginException(reason: LoginFailureReason.unknown);
       }
     } on Exception {
-      onError(LoginFailureReason.unknown);
+      throw LoginException(reason: LoginFailureReason.unknown);
     }
   }
 
@@ -50,8 +48,6 @@ class Communicator {
     @required bool isOwner,
     @required String email,
     @required String password,
-    @required void Function() onSuccess,
-    @required void Function() onError,
   }) async {
     final request = requestBuilder.build(
       endpoint: 'users',
@@ -64,17 +60,10 @@ class Communicator {
       },
     );
 
-    try {
-      await httpClient.request('POST', request);
-      onSuccess();
-    } on Exception {
-      onError();
-    }
+    await httpClient.request('POST', request);
   }
 
-  Future<void> fetchRestaurants({
-    @required void Function(Restaurants) onSuccess,
-    @required void Function() onError,
+  Future<Restaurants> fetchRestaurants({
     String ownerId,
   }) async {
     final request = requestBuilder.build(
@@ -85,14 +74,27 @@ class Communicator {
       },
     );
 
-    try {
-      final response = await httpClient.request('GET', request);
-      final restaurants = Restaurants.fromJson(response.body as List<dynamic>);
+    final response = await httpClient.request('GET', request);
 
-      onSuccess(restaurants);
-    } on Exception {
-      onError();
-    }
+    return Restaurants.fromJson(response.body as List<dynamic>);
+  }
+
+  Future<Restaurant> createRestaurant({
+    @required String name,
+    @required String address,
+  }) async {
+    final request = requestBuilder.build(
+     endpoint: 'restaurants',
+     authorized: true,
+     body: <String, dynamic>{
+       'name': name,
+       'address': address,
+     },
+    );
+
+    final response = await httpClient.request('POST', request);
+
+    return Restaurant.fromJson(response.body as Map<String, dynamic>);
   }
 
   final RequestBuilder requestBuilder;

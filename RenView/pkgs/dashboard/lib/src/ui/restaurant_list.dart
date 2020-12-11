@@ -51,7 +51,7 @@ class _RestaurantListState extends State<RestaurantList> {
               Visibility(
                 visible: !firstFetch,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                   child: SmartRefresher(
                     controller: _refreshController,
                     onRefresh: () => _onRefresh(dispatcher),
@@ -60,7 +60,7 @@ class _RestaurantListState extends State<RestaurantList> {
                           .where((r) => r.averageRating >= filerCriteria.rating)
                           .map(
                             (restaurant) => Padding(
-                              padding: const EdgeInsets.only(top: 20),
+                              padding: const EdgeInsets.only(bottom: 20),
                               child: ListTile(
                                 title: RestaurantName(restaurant.name),
                                 subtitle: Padding(

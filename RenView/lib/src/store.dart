@@ -18,11 +18,9 @@ class AppStateStore extends Store<AppState> {
         );
 }
 
-AppState _reducer(AppState state, dynamic action) {
-  return AppState(
-    currentUserIdentity: currentUserIdentityReducer(state.currentUserIdentity, action),
-    communicatorState: communicatorReducer(state.communicatorState, action),
-    loginState: loginReducer(state.loginState, action),
-    dashboardState: dashboardReducer(state.dashboardState, action),
-  );
-}
+AppState _reducer(AppState state, dynamic action) => AppState(
+      currentUserIdentity: currentUserIdentityReducer(state.currentUserIdentity, action),
+      communicatorState: communicatorReducer(state.communicatorState, action),
+      loginState: loginReducer(state.loginState, action),
+      dashboardState: dashboardReducer(state.dashboardState, action),
+    );

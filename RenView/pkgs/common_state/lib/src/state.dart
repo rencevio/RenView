@@ -5,6 +5,7 @@ part 'state.g.dart';
 
 // ignore_for_file: annotate_overrides
 
+@immutable
 class UserRole {
   const UserRole._(this._role);
 
@@ -15,7 +16,18 @@ class UserRole {
   @override
   String toString() => _role;
 
-  UserRole.fromString(String role) : this._(role);
+  const UserRole.fromString(String role) : this._(role);
+
+  @override
+  bool operator ==(dynamic other) {
+    if (other.runtimeType == String) return _role == other;
+    if (other.runtimeType == runtimeType) return _role == other._role;
+
+    return false;
+  }
+
+  @override
+  int get hashCode => _role.hashCode;
 
   final String _role;
 }
@@ -34,7 +46,7 @@ class UserIdentity extends $UserIdentity {
           id: '',
           email: '',
           name: '',
-          role: UserRole.fromString(''),
+          role: const UserRole.fromString(''),
         );
 
   final String id;

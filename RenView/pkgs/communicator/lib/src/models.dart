@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:common_state/common_state.dart';
 import 'package:functional_data/functional_data.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -21,6 +22,13 @@ class User extends $User {
         assert(role != null);
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+
+  UserIdentity get identity => UserIdentity(
+        id: id,
+        name: name,
+        email: email,
+        role: UserRole.fromString(role),
+      );
 
   final String id;
   final String name;
@@ -50,6 +58,13 @@ class Restaurant extends $Restaurant {
   });
 
   factory Restaurant.fromJson(Map<String, dynamic> json) => _$RestaurantFromJson(json);
+
+  RestaurantIdentity get identity => RestaurantIdentity(
+        id: id,
+        name: name,
+        address: address,
+        averageRating: averageRating,
+      );
 
   final String id;
   final String name;

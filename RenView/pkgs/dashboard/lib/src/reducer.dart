@@ -8,6 +8,8 @@ DashboardState dashboardReducer(DashboardState state, dynamic action) {
     return state.copyWith(restaurants: action.restaurants, refreshingRestaurantList: false);
   } else if (action is FetchRestaurantsAction) {
     return state.copyWith(refreshingRestaurantList: true);
+  } else if (action is RestaurantCreatedAction) {
+    return state.copyWith(restaurants: state.restaurants.followedBy([action.restaurant]).toList(growable: false));
   }
 
   return state;
