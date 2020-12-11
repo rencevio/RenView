@@ -15,12 +15,10 @@ class AppStateStore extends Store<AppState> {
           _reducer,
           initialState: initialState,
           middleware: middleware,
-          syncStream: true,
         );
 }
 
 AppState _reducer(AppState state, dynamic action) {
-  print(action);
   return AppState(
     currentUserIdentity: currentUserIdentityReducer(state.currentUserIdentity, action),
     communicatorState: communicatorReducer(state.communicatorState, action),

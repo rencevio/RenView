@@ -31,7 +31,7 @@ class Communicator {
       final response = await httpClient.request('POST', request);
 
       final token = response.body['token'] as String;
-      final user = User.fromJson(response.body as Map<String, dynamic>);
+      final user = User.fromJson(response.body['user'] as Map<String, dynamic>);
 
       onSuccess(token: token, user: user);
     } on InvalidResponseException catch (e) {

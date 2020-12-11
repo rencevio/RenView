@@ -7,3 +7,5 @@ class UserSessionStartedAction {
 
   final UserIdentity userIdentity;
 }
+
+class LogoutAction {}

@@ -15,7 +15,10 @@ class User extends $User {
     @required this.name,
     @required this.email,
     @required this.role,
-  });
+  })  : assert(id != null),
+        assert(name != null),
+        assert(email != null),
+        assert(role != null);
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

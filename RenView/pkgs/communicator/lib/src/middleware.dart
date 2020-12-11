@@ -9,39 +9,43 @@ List<Middleware<State>> communicatorMiddleware<State>({
 }) =>
     [
       (Store<State> store, dynamic action, NextDispatcher next) {
-        if (action is LoginAction) {
-          communicator.login(
-            email: action.email,
-            password: action.password,
-            onSuccess: ({user, token}) => store.dispatch(LoginSuccessfulAction(
-              userIdentity: UserIdentity(
-                id: user.id,
-                email: user.name,
-                name: user.email,
-                role: UserRole.fromString(user.role),
-              ),
-              token: token,
-            )),
-            onError: (reason) => store.dispatch(LoginFailedAction(reason: reason)),
-          );
-        } else if (action is RegisterAction) {
-          communicator.register(
-            name: action.name,
-            isOwner: action.isOwner,
-            email: action.email,
-            password: action.password,
-            onSuccess: () => store.dispatch(RegistrationSuccessfulAction()),
-            onError: () => store.dispatch(RegistrationFailedAction()),
-          );
-        } else if (action is FetchRestaurantsForUserAction) {
-          _fetchRestaurants(communicator: communicator, dispatcher: store.dispatch);
-        } else if (action is FetchRestaurantsForOwnerAction) {
-          _fetchRestaurants(ownerId: action.ownerId, communicator: communicator, dispatcher: store.dispatch);
-        }
+        _middleware(store, action, communicator);
 
         next(action);
       },
     ];
+
+Future<void> _middleware<State>(Store<State> store, dynamic action, Communicator communicator) async {
+  if (action is LoginAction) {
+    await communicator.login(
+      email: action.email,
+      password: action.password,
+      onSuccess: ({user, token}) => store.dispatch(LoginSuccessfulAction(
+        userIdentity: UserIdentity(
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: UserRole.fromString(user.role),
+        ),
+        token: token,
+      )),
+      onError: (reason) => store.dispatch(LoginFailedAction(reason: reason)),
+    );
+  } else if (action is RegisterAction) {
+    await communicator.register(
+      name: action.name,
+      isOwner: action.isOwner,
+      email: action.email,
+      password: action.password,
+      onSuccess: () => store.dispatch(RegistrationSuccessfulAction()),
+      onError: () => store.dispatch(RegistrationFailedAction()),
+    );
+  } else if (action is FetchRestaurantsForUserAction) {
+    _fetchRestaurants(communicator: communicator, dispatcher: store.dispatch);
+  } else if (action is FetchRestaurantsForOwnerAction) {
+    _fetchRestaurants(ownerId: action.ownerId, communicator: communicator, dispatcher: store.dispatch);
+  }
+}
 
 void _fetchRestaurants({
   @required Communicator communicator,

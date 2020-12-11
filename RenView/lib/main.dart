@@ -35,6 +35,10 @@ Future<void> main() async {
   dependencies.store = AppStateStore(
     initialState: initialState,
     middleware: [
+      (store, dynamic action, next) {
+        print(action);
+        next(action);
+      },
       ...appMiddleware(),
       ...communicatorMiddleware(communicator: communicator),
       ...loginMiddleware(),

@@ -7,6 +7,6 @@ class Style {
   static const restaurantAddressColor = Color.fromRGBO(198, 208, 214, 1.0);
   static const restaurantAddressSize = 16.0;
 
-  static const averageRatingTextSize = 20.0;
+  static const averageRatingTextSize = 17.0;
   static const averageRatingImageSize = 30.0;
 }

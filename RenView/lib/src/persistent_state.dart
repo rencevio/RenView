@@ -19,7 +19,10 @@ class PersistentUserIdentity extends $PersistentUserIdentity {
     @required this.email,
     @required this.name,
     @required this.role,
-  });
+  })  : assert(id != null),
+        assert(email != null),
+        assert(name != null),
+        assert(role != null);
 
   PersistentUserIdentity.fromState(UserIdentity state)
       : this(
