@@ -1,3 +1,4 @@
+import 'package:communicator/communicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -64,16 +65,23 @@ class _RestaurantListState extends State<RestaurantList> {
                               padding: const EdgeInsets.only(bottom: 20),
                               child: ListTile(
                                 title: RestaurantName(restaurant.name),
-                                onTap: () => Navigator.of(context).push<void>(
-                                  MaterialPageRoute(
-                                    builder: (context) => RestaurantDetails(restaurantId: restaurant.id),
-                                  ),
-                                ),
+                                onTap: () {
+                                  dispatcher(FetchReviewsForRestaurantAction(restaurantId: restaurant.id));
+
+                                  return Navigator.of(context).push<void>(
+                                    MaterialPageRoute(
+                                      builder: (context) => RestaurantDetails(restaurantId: restaurant.id),
+                                    ),
+                                  );
+                                },
                                 subtitle: Padding(
                                   padding: const EdgeInsets.only(top: 10, left: 10),
                                   child: RestaurantAddress(restaurant.address),
                                 ),
-                                trailing: AverageRating(restaurant.averageRating),
+                                trailing: AverageRating(
+                                  restaurant.averageRating,
+                                  totalReviews: restaurant.totalReviews,
+                                ),
                               ),
                             ),
                           )

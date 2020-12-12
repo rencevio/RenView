@@ -56,6 +56,19 @@ Future<void> _middleware<State>(Store<State> store, dynamic action, Communicator
     await communicator.editRestaurant(id: action.id, name: action.name, address: action.address);
   } else if (action is DeleteRestaurantAction) {
     await communicator.deleteRestaurant(id: action.id);
+  } else if (action is FetchReviewsForRestaurantAction) {
+    try {
+      final reviews = await communicator.fetchReviewsForRestaurant(action.restaurantId);
+
+      store.dispatch(
+        ReviewsForRestaurantFetchedAction(
+          restaurantId: action.restaurantId,
+          reviews: reviews.reviews.map((r) => r.identity).toList(growable: false),
+        ),
+      );
+    } on Exception {
+      print('Reviews for restaurant fetch failed!');
+    }
   }
 }
 
@@ -65,9 +78,7 @@ Future<void> _fetchRestaurants({
   String ownerId,
 }) async {
   try {
-    final restaurants = await communicator.fetchRestaurants(
-      ownerId: ownerId,
-    );
+    final restaurants = await communicator.fetchRestaurants(ownerId: ownerId);
 
     dispatcher(
       RestaurantsFetchedAction(

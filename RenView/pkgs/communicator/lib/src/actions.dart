@@ -104,3 +104,22 @@ class DeleteRestaurantAction {
 
   final String id;
 }
+
+class FetchReviewsForRestaurantAction {
+  FetchReviewsForRestaurantAction({
+    @required this.restaurantId,
+  }) : assert(restaurantId != null);
+
+  final String restaurantId;
+}
+
+class ReviewsForRestaurantFetchedAction {
+  ReviewsForRestaurantFetchedAction({
+    @required this.restaurantId,
+    @required this.reviews,
+  })  : assert(restaurantId != null),
+        assert(reviews != null);
+
+  final String restaurantId;
+  final List<ReviewIdentity> reviews;
+}

@@ -12,7 +12,8 @@ import 'request_builder.dart';
 class Communicator {
   Communicator({
     @required Optional<String> Function() getSessionToken,
-  })  : requestBuilder = RequestBuilder(getSessionToken: getSessionToken),
+  })
+      : requestBuilder = RequestBuilder(getSessionToken: getSessionToken),
         httpClient = HttpClient();
 
   Future<LoginResponse> login({
@@ -123,6 +124,20 @@ class Communicator {
     );
 
     await httpClient.request('DELETE', request);
+  }
+
+  Future<Reviews> fetchReviewsForRestaurant(String restaurantId) async {
+    final request = requestBuilder.build(
+      endpoint: 'reviews',
+      authorized: false,
+      customQueryParameters: {
+        'restaurant': restaurantId,
+      },
+    );
+
+    final response = await httpClient.request('GET', request);
+
+    return Reviews.fromJson(response.body as List<dynamic>);
   }
 
   final RequestBuilder requestBuilder;

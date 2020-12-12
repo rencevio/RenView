@@ -1,5 +1,6 @@
 import 'package:functional_data/functional_data.dart';
 import 'package:meta/meta.dart';
+import 'package:plain_optional/plain_optional.dart';
 
 part 'state.g.dart';
 
@@ -43,14 +44,34 @@ class UserIdentity extends $UserIdentity {
 
   UserIdentity.empty()
       : this(
-          id: '',
-          email: '',
-          name: '',
-          role: const UserRole.fromString(''),
-        );
+    id: '',
+    email: '',
+    name: '',
+    role: const UserRole.fromString(''),
+  );
 
   final String id;
   final String email;
+  final String name;
+  final UserRole role;
+}
+
+@FunctionalData()
+class OtherUserIdentity extends $OtherUserIdentity {
+  OtherUserIdentity({
+    @required this.id,
+    @required this.name,
+    @required this.role,
+  });
+
+  OtherUserIdentity.empty()
+      : this(
+    id: '',
+    name: '',
+    role: const UserRole.fromString(''),
+  );
+
+  final String id;
   final String name;
   final UserRole role;
 }
@@ -62,10 +83,36 @@ class RestaurantIdentity extends $RestaurantIdentity {
     @required this.name,
     @required this.address,
     @required this.averageRating,
+    @required this.totalReviews,
   });
 
   final String id;
   final String name;
   final String address;
   final double averageRating;
+  final int totalReviews;
+}
+
+@FunctionalData()
+class ReviewIdentity extends $ReviewIdentity {
+  ReviewIdentity({
+    @required this.id,
+    @required this.user,
+    @required this.restaurantId,
+    @required this.rating,
+    @required this.visitDate,
+    @required this.comment,
+  })  : assert(id != null),
+        assert(user != null),
+        assert(restaurantId != null),
+        assert(rating != null),
+        assert(visitDate != null),
+        assert(comment != null);
+
+  final String id;
+  final OtherUserIdentity user;
+  final String restaurantId;
+  final int rating;
+  final DateTime visitDate;
+  final Optional<String> comment;
 }

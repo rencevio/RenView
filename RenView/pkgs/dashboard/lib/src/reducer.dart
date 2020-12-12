@@ -17,6 +17,13 @@ DashboardState dashboardReducer(DashboardState state, dynamic action) {
             .toList(growable: false));
   } else if (action is DeleteRestaurantAction) {
     return state.copyWith(restaurants: state.restaurants.where((r) => r.id != action.id).toList(growable: false));
+  } else if (action is ReviewsForRestaurantFetchedAction) {
+    return state.copyWith(
+      reviewsForRestaurant: Map.from(state.reviewsForRestaurant)
+        ..addEntries(
+          [MapEntry(action.restaurantId, action.reviews)],
+        ),
+    );
   }
 
   return state;
