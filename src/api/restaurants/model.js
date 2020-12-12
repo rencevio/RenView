@@ -39,7 +39,8 @@ restaurantsSchema.methods = {
         owner: this.owner.view(full),
         name: this.name,
         address: this.address,
-        averageRating: averageRating
+        averageRating: averageRating,
+        totalReviews: reviews.length
       }
 
       return full ? {

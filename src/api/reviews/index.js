@@ -14,6 +14,7 @@ const {
   create,
   createReply,
   index,
+  indexPending,
   show,
   update,
   destroy
@@ -93,13 +94,28 @@ router.post('/:id/reply',
  */
 router.get('/',
   query({
-    owner: {
+    restaurant: {
       type: mongoose.Schema.ObjectId,
       paths: ['restaurant'],
       operator: '$eq'
     }
   }),
   index)
+
+/**
+ * @api {get} /reviews Retrieve pending reviews
+ * @apiName RetrievePendingReviews
+ * @apiGroup Reviews
+ * @apiPermission owner
+ * @apiUse listParams
+ * @apiSuccess {Object[]} reviews List of pending reviews.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ */
+router.get('/pending',
+  token({
+    required: true
+  }),
+  indexPending)
 
 /**
  * @api {get} /reviews/:id Retrieve reviews

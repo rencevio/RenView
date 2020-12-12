@@ -4,6 +4,7 @@ const {
   authorOrAdmin
 } = require('../../services/response/')
 const Reviews = require('./model')
+const Restaurants = require('../restaurants/model')
 const {
   clean
 } = require('../../services/utils')
@@ -30,7 +31,7 @@ exports.create = ({
     .catch(next)
 }
 
-exports.createReply = ({
+exports.createReply = async ({
   user,
   bodymen: {
     body
@@ -41,6 +42,19 @@ exports.createReply = ({
     return res.status(401).json({
       valid: false,
       message: 'Only owners can create replies'
+    })
+  }
+
+  let restaurant = await Restaurants.findOne({
+    id: {
+      $eq: params.restaurant
+    }
+  })
+
+  if (restaurant == null || restaurant.owner != user.id) {
+    return res.status(401).json({
+      valid: false,
+      message: 'Only owners of this restaurants can create replies'
     })
   }
 
@@ -64,6 +78,29 @@ exports.index = ({
   .then((reviews) => reviews.map((reviews) => reviews.view()))
   .then(success(res))
   .catch(next)
+
+exports.indexPending = async ({
+  user,
+}, res, next) => {
+  let ownedRestaurants = await Restaurants.find({
+    owner: {
+      $eq: user.id
+    }
+  })
+
+  Reviews.find({
+      restaurant: {
+        $in: ownedRestaurants
+      },
+      reply: {
+        $exists: false
+      }
+    })
+    .populate('user')
+    .then((reviews) => reviews.map((reviews) => reviews.view()))
+    .then(success(res))
+    .catch(next)
+}
 
 exports.show = ({
     params
