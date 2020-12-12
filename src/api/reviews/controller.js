@@ -76,8 +76,29 @@ exports.createReply = async ({
 
   Reviews.findById(params.id)
     .then(notFound(res))
-    .then((reviews) => reviews ? Object.assign(reviews, body).save() : null)
-    .then((reviews) => reviews ? reviews.view(true) : null)
+    .then((review) => {
+      if (!review.comment) {
+        res.status(400).json({
+          valid: false,
+          message: 'Cannot create reply to a review without comment'
+        })
+
+        return null
+      }
+
+      if (review.reply) {
+        res.status(400).json({
+          valid: false,
+          message: 'Cannot create more than one reply to a review'
+        })
+
+        return null
+      }
+
+      return review
+    })
+    .then((review) => review ? Object.assign(review, body).save() : null)
+    .then((review) => review ? review.view(true) : null)
     .then(success(res))
     .catch(next)
 }
