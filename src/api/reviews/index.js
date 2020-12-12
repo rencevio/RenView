@@ -29,7 +29,8 @@ const {
   restaurant,
   rating,
   comment,
-  reply
+  reply,
+  visitDate
 } = schema.tree
 
 /**
@@ -41,6 +42,7 @@ const {
  * @apiParam restaurant Reviews's restaurant.
  * @apiParam rating Reviews's rating.
  * @apiParam comment Reviews's comment.
+ * @apiParam visitDate Date of visit.
  * @apiSuccess {Object} reviews Reviews's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Reviews not found.
@@ -54,6 +56,7 @@ router.post('/',
     restaurant,
     rating,
     comment,
+    visitDate
   }),
   create)
 
@@ -152,6 +155,10 @@ router.put('/:id',
     },
     comment: {
       ...comment,
+      required: false
+    },
+    visitDate: {
+      ...visitDate,
       required: false
     },
   }),

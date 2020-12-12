@@ -17,6 +17,10 @@ const reviewsSchema = new mongoose.Schema({
     min: 1,
     max: 5
   },
+  visitDate: {
+    type: Date,
+    required: true
+  },
   comment: {
     type: String
   },
@@ -43,6 +47,7 @@ reviewsSchema.methods = {
       rating: this.rating,
       comment: this.comment,
       reply: this.reply,
+      visitDate: this.visitDate,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }
