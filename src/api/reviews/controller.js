@@ -9,7 +9,7 @@ const {
   clean
 } = require('../../services/utils')
 
-exports.create = ({
+exports.create = async ({
   user,
   bodymen: {
     body
@@ -19,6 +19,22 @@ exports.create = ({
     return res.status(401).json({
       valid: false,
       message: 'Only users can create reviews'
+    })
+  }
+
+  let existingReview = await Reviews.findOne({
+    user: {
+      $eq: user.id
+    },
+    restaurant: {
+      $eq: body.restaurant
+    }
+  })
+
+  if (existingReview != null) {
+    return res.status(403).json({
+      valid: false,
+      message: 'A user can create only one review per restaurant'
     })
   }
 
