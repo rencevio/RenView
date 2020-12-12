@@ -167,23 +167,26 @@ abstract class $ReviewIdentity {
   int get rating;
   DateTime get visitDate;
   Optional<String> get comment;
+  Optional<String> get reply;
   ReviewIdentity copyWith(
           {String id,
           OtherUserIdentity user,
           String restaurantId,
           int rating,
           DateTime visitDate,
-          Optional<String> comment}) =>
+          Optional<String> comment,
+          Optional<String> reply}) =>
       ReviewIdentity(
           id: id ?? this.id,
           user: user ?? this.user,
           restaurantId: restaurantId ?? this.restaurantId,
           rating: rating ?? this.rating,
           visitDate: visitDate ?? this.visitDate,
-          comment: comment ?? this.comment);
+          comment: comment ?? this.comment,
+          reply: reply ?? this.reply);
   @override
   String toString() =>
-      "ReviewIdentity(id: $id, user: $user, restaurantId: $restaurantId, rating: $rating, visitDate: $visitDate, comment: $comment)";
+      "ReviewIdentity(id: $id, user: $user, restaurantId: $restaurantId, rating: $rating, visitDate: $visitDate, comment: $comment, reply: $reply)";
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
@@ -192,7 +195,8 @@ abstract class $ReviewIdentity {
       restaurantId == other.restaurantId &&
       rating == other.rating &&
       visitDate == other.visitDate &&
-      comment == other.comment;
+      comment == other.comment &&
+      reply == other.reply;
   @override
   int get hashCode {
     var result = 17;
@@ -202,6 +206,7 @@ abstract class $ReviewIdentity {
     result = 37 * result + rating.hashCode;
     result = 37 * result + visitDate.hashCode;
     result = 37 * result + comment.hashCode;
+    result = 37 * result + reply.hashCode;
     return result;
   }
 }
@@ -220,4 +225,6 @@ class ReviewIdentity$ {
       (s_, visitDate) => s_.copyWith(visitDate: visitDate));
   static final comment = Lens<ReviewIdentity, Optional<String>>(
       (s_) => s_.comment, (s_, comment) => s_.copyWith(comment: comment));
+  static final reply = Lens<ReviewIdentity, Optional<String>>(
+      (s_) => s_.reply, (s_, reply) => s_.copyWith(reply: reply));
 }

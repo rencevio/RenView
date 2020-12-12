@@ -121,6 +121,7 @@ class Review extends $Review {
     @required this.rating,
     @required this.visitDate,
     this.comment,
+    this.reply,
   })  : assert(id != null),
         assert(user != null),
         assert(restaurantId != null),
@@ -136,6 +137,7 @@ class Review extends $Review {
         rating: rating,
         visitDate: DateTime.parse(visitDate),
         comment: Optional(comment),
+        reply: Optional(reply),
       );
 
   final String id;
@@ -145,4 +147,5 @@ class Review extends $Review {
   final int rating;
   final String visitDate;
   final String comment;
+  final String reply;
 }

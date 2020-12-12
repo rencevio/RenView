@@ -102,12 +102,14 @@ class ReviewIdentity extends $ReviewIdentity {
     @required this.rating,
     @required this.visitDate,
     @required this.comment,
+    @required this.reply,
   })  : assert(id != null),
         assert(user != null),
         assert(restaurantId != null),
         assert(rating != null),
         assert(visitDate != null),
-        assert(comment != null);
+        assert(comment != null),
+        assert(reply != null);
 
   final String id;
   final OtherUserIdentity user;
@@ -115,4 +117,5 @@ class ReviewIdentity extends $ReviewIdentity {
   final int rating;
   final DateTime visitDate;
   final Optional<String> comment;
+  final Optional<String> reply;
 }

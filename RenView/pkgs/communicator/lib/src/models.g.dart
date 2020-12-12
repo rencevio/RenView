@@ -219,23 +219,26 @@ abstract class $Review {
   int get rating;
   String get visitDate;
   String get comment;
+  String get reply;
   Review copyWith(
           {String id,
           OtherUser user,
           String restaurantId,
           int rating,
           String visitDate,
-          String comment}) =>
+          String comment,
+          String reply}) =>
       Review(
           id: id ?? this.id,
           user: user ?? this.user,
           restaurantId: restaurantId ?? this.restaurantId,
           rating: rating ?? this.rating,
           visitDate: visitDate ?? this.visitDate,
-          comment: comment ?? this.comment);
+          comment: comment ?? this.comment,
+          reply: reply ?? this.reply);
   @override
   String toString() =>
-      "Review(id: $id, user: $user, restaurantId: $restaurantId, rating: $rating, visitDate: $visitDate, comment: $comment)";
+      "Review(id: $id, user: $user, restaurantId: $restaurantId, rating: $rating, visitDate: $visitDate, comment: $comment, reply: $reply)";
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
@@ -244,7 +247,8 @@ abstract class $Review {
       restaurantId == other.restaurantId &&
       rating == other.rating &&
       visitDate == other.visitDate &&
-      comment == other.comment;
+      comment == other.comment &&
+      reply == other.reply;
   @override
   int get hashCode {
     var result = 17;
@@ -254,6 +258,7 @@ abstract class $Review {
     result = 37 * result + rating.hashCode;
     result = 37 * result + visitDate.hashCode;
     result = 37 * result + comment.hashCode;
+    result = 37 * result + reply.hashCode;
     return result;
   }
 }
@@ -271,6 +276,8 @@ class Review$ {
       (s_, visitDate) => s_.copyWith(visitDate: visitDate));
   static final comment = Lens<Review, String>(
       (s_) => s_.comment, (s_, comment) => s_.copyWith(comment: comment));
+  static final reply = Lens<Review, String>(
+      (s_) => s_.reply, (s_, reply) => s_.copyWith(reply: reply));
 }
 
 // **************************************************************************
@@ -363,6 +370,7 @@ Review _$ReviewFromJson(Map<String, dynamic> json) {
     rating: json['rating'] as int,
     visitDate: json['visitDate'] as String,
     comment: json['comment'] as String,
+    reply: json['reply'] as String,
   );
 }
 
@@ -373,4 +381,5 @@ Map<String, dynamic> _$ReviewToJson(Review instance) => <String, dynamic>{
       'rating': instance.rating,
       'visitDate': instance.visitDate,
       'comment': instance.comment,
+      'reply': instance.reply,
     };
