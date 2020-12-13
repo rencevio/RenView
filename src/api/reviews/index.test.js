@@ -39,7 +39,8 @@ beforeEach(async () => {
   reviews = await Review.create({
     user,
     rating: 3,
-    restaurant: restaurant
+    restaurant: restaurant,
+    visitDate: '2012-12-12'
   })
 })
 
@@ -50,9 +51,10 @@ test('POST /reviews 201 (user)', async () => {
   } = await request(app())
     .post('')
     .send({
-      access_token: userSession,
+      access_token: anotherSession,
       restaurant: restaurant.id,
       rating: 1,
+      visitDate: '2012-12-12',
       comment: 'test'
     })
   expect(status).toBe(201)

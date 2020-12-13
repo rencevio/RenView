@@ -61,46 +61,38 @@ exports.createReply = async ({
     })
   }
 
-  let restaurant = await Restaurants.findOne({
-    id: {
-      $eq: params.restaurant
-    }
-  })
+  let review = await Reviews.findById(params.id).then(notFound(res))
+
+  let restaurant = await Restaurants.findById(review.restaurant)
 
   if (restaurant == null || restaurant.owner != user.id) {
     return res.status(401).json({
       valid: false,
-      message: 'Only owners of this restaurants can create replies'
+      message: 'Only owners of this restaurant can create replies'
     })
   }
 
-  Reviews.findById(params.id)
-    .then(notFound(res))
-    .then((review) => {
-      if (!review.comment) {
-        res.status(400).json({
-          valid: false,
-          message: 'Cannot create reply to a review without comment'
-        })
-
-        return null
-      }
-
-      if (review.reply) {
-        res.status(400).json({
-          valid: false,
-          message: 'Cannot create more than one reply to a review'
-        })
-
-        return null
-      }
-
-      return review
+  if (!review.comment) {
+    res.status(400).json({
+      valid: false,
+      message: 'Cannot create reply to a review without comment'
     })
-    .then((review) => review ? Object.assign(review, body).save() : null)
-    .then((review) => review ? review.view(true) : null)
-    .then(success(res))
-    .catch(next)
+
+    return null
+  }
+
+  if (review.reply) {
+    res.status(400).json({
+      valid: false,
+      message: 'Cannot create more than one reply to a review'
+    })
+
+    return null
+  }
+
+  Object.assign(review, body).save()
+
+  success(res)(review.view(true))
 }
 
 exports.index = ({

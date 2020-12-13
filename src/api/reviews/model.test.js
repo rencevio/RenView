@@ -26,7 +26,8 @@ beforeEach(async () => {
     restaurant: restaurant,
     rating: 3,
     comment: 'test',
-    reply: 'test'
+    reply: 'test',
+    visitDate: '2012-12-12'
   })
 })
 
