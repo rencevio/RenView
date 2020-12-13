@@ -105,21 +105,24 @@ abstract class $RestaurantIdentity {
   String get address;
   double get averageRating;
   int get totalReviews;
+  OtherUserIdentity get owner;
   RestaurantIdentity copyWith(
           {String id,
           String name,
           String address,
           double averageRating,
-          int totalReviews}) =>
+          int totalReviews,
+          OtherUserIdentity owner}) =>
       RestaurantIdentity(
           id: id ?? this.id,
           name: name ?? this.name,
           address: address ?? this.address,
           averageRating: averageRating ?? this.averageRating,
-          totalReviews: totalReviews ?? this.totalReviews);
+          totalReviews: totalReviews ?? this.totalReviews,
+          owner: owner ?? this.owner);
   @override
   String toString() =>
-      "RestaurantIdentity(id: $id, name: $name, address: $address, averageRating: $averageRating, totalReviews: $totalReviews)";
+      "RestaurantIdentity(id: $id, name: $name, address: $address, averageRating: $averageRating, totalReviews: $totalReviews, owner: $owner)";
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
@@ -127,7 +130,8 @@ abstract class $RestaurantIdentity {
       name == other.name &&
       address == other.address &&
       averageRating == other.averageRating &&
-      totalReviews == other.totalReviews;
+      totalReviews == other.totalReviews &&
+      owner == other.owner;
   @override
   int get hashCode {
     var result = 17;
@@ -136,6 +140,7 @@ abstract class $RestaurantIdentity {
     result = 37 * result + address.hashCode;
     result = 37 * result + averageRating.hashCode;
     result = 37 * result + totalReviews.hashCode;
+    result = 37 * result + owner.hashCode;
     return result;
   }
 }
@@ -153,6 +158,8 @@ class RestaurantIdentity$ {
   static final totalReviews = Lens<RestaurantIdentity, int>(
       (s_) => s_.totalReviews,
       (s_, totalReviews) => s_.copyWith(totalReviews: totalReviews));
+  static final owner = Lens<RestaurantIdentity, OtherUserIdentity>(
+      (s_) => s_.owner, (s_, owner) => s_.copyWith(owner: owner));
 }
 
 // ignore_for_file: join_return_with_assignment

@@ -10,7 +10,7 @@ import 'package:utils/utils.dart';
 import '../../state.dart';
 import '../dialogs/restaurant_deletion_confirmation_dialog.dart';
 import '../dialogs/restaurant_edit_dialog.dart';
-import '../dialogs/review_creation_dialog.dart';
+import '../dialogs/review_edit_creation_dialog.dart';
 import '../style.dart';
 import 'restaurant_details_action_sheet.dart';
 import 'review_list.dart';
@@ -40,11 +40,15 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
           if (state.restaurants.where((r) => r.id == widget.restaurantId).isEmpty) {
             return lastKnownDetails;
           } else {
+            final restaurant = state.restaurants.singleWhere((r) => r.id == widget.restaurantId);
+
             return _ViewModel(
               dispatcher: dispatcher,
               user: userIdentity,
-              restaurant: state.restaurants.singleWhere((r) => r.id == widget.restaurantId),
+              restaurant: restaurant,
               reviews: state.reviews.where((r) => r.restaurantId == widget.restaurantId).toList(growable: false),
+              isReviewInteractive: (review) =>
+                  review.user.id == userIdentity.id || !review.reply.hasValue && restaurant.owner.id == userIdentity.id,
             );
           }
         },
@@ -60,7 +64,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                   child: Text(viewModel.restaurant.name),
                 ),
                 actions: [
-                  if (viewModel.user.role != UserRole.user)
+                  if (viewModel.user.id == viewModel.restaurant.owner.id)
                     IconButton(
                       icon: const Icon(Icons.settings),
                       onPressed: () {
@@ -133,6 +137,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: _CreateReviewButton(
+                            dispatcher: viewModel.dispatcher,
                             restaurantId: widget.restaurantId,
                           ),
                         ),
@@ -140,7 +145,22 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                       if (viewModel.reviews == null)
                         const Center(child: CupertinoActivityIndicator())
                       else
-                        ReviewList(reviews: viewModel.reviews),
+                        ReviewList(
+                          reviews: viewModel.reviews,
+                          isReviewInteractive: viewModel.isReviewInteractive,
+                          onReviewTapped: (review) {
+                            if (viewModel.user.role == UserRole.user)
+                              showReviewEditDialog(
+                                context,
+                                dispatcher: viewModel.dispatcher,
+                                reviewId: review.id,
+                                comment: review.comment.valueOr(() => null),
+                                rating: review.rating,
+                                visitDate: review.visitDate,
+                              );
+                            // todo: else create reply
+                          },
+                        ),
                     ],
                   ),
                 ),
@@ -157,6 +177,7 @@ class _ViewModel extends $_ViewModel {
     @required this.dispatcher,
     @required this.user,
     @required this.restaurant,
+    @required this.isReviewInteractive,
     this.reviews,
   });
 
@@ -166,6 +187,7 @@ class _ViewModel extends $_ViewModel {
   final UserIdentity user;
   final RestaurantIdentity restaurant;
   final List<ReviewIdentity> reviews;
+  final bool Function(ReviewIdentity) isReviewInteractive;
 }
 
 class _AverageRating extends StatelessWidget {
@@ -217,15 +239,21 @@ class _AverageRating extends StatelessWidget {
 
 class _CreateReviewButton extends StatelessWidget {
   const _CreateReviewButton({
+    @required this.dispatcher,
     @required this.restaurantId,
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => RaisedButton(
-        onPressed: () => showReviewCreationDialog(context, restaurantId: restaurantId),
+        onPressed: () => showReviewCreationDialog(
+          context,
+          restaurantId: restaurantId,
+          dispatcher: dispatcher,
+        ),
         child: const Text('Write a review'),
       );
 
+  final Dispatcher dispatcher;
   final String restaurantId;
 }

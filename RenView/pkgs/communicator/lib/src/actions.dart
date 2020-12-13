@@ -149,3 +149,31 @@ class ReviewCreatedAction {
 
   final ReviewIdentity review;
 }
+
+class EditReviewAction {
+  EditReviewAction({
+    @required this.reviewId,
+    @required this.rating,
+    @required this.visitDate,
+    @required this.comment,
+  })  : assert(reviewId != null),
+        assert(rating != null),
+        assert(visitDate != null),
+        assert(comment != null);
+
+  final String reviewId;
+  final int rating;
+  final DateTime visitDate;
+  final Optional<String> comment;
+}
+
+class ReplyToReviewAction {
+  ReplyToReviewAction({
+    @required this.reviewId,
+    @required this.reply,
+  })  : assert(reviewId != null),
+        assert(reply != null);
+
+  final String reviewId;
+  final String reply;
+}

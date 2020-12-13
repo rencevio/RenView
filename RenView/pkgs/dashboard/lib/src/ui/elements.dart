@@ -86,87 +86,92 @@ class AverageRating extends StatelessWidget {
 class Review extends StatelessWidget {
   const Review({
     @required this.review,
+    this.onTap,
     Key key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 5),
-            child: Row(
-              children: [
-                for (var i = 0; i < review.rating; i++)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 2.0),
-                    child: Image.asset(
-                      'assets/star.png',
-                      package: 'dashboard',
-                      height: Style.restaurantDetailsRatingIconSize,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 5),
-          if (review.comment.hasValue) ...[
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onTap,
+    child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Padding(
               padding: const EdgeInsets.only(left: 5),
-              child: RichText(
-                text: TextSpan(
-                  children: [
-                    _reviewerNameTextSpan(review.user.name),
-                    const TextSpan(text: 'about his visit on '),
-                    _reviewDateTextSpan(review.visitDate.yearMonthDay),
-                    const TextSpan(text: ':'),
-                  ],
-                ),
+              child: Row(
+                children: [
+                  for (var i = 0; i < review.rating; i++)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 2.0),
+                      child: Image.asset(
+                        'assets/star.png',
+                        package: 'dashboard',
+                        height: Style.restaurantDetailsRatingIconSize,
+                      ),
+                    ),
+                ],
               ),
             ),
             const SizedBox(height: 5),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                review.comment.unsafe,
-                style: const TextStyle(fontSize: Style.restaurantDetailsCommentTextSize),
-              ),
-            ),
-            if (review.reply.hasValue) ...[
-              const SizedBox(height: 7),
-              const Padding(
-                padding: EdgeInsets.only(left: 5),
-                child: Text(
-                  '''Owner's reply:''',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+            if (review.comment.hasValue) ...[
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      _reviewerNameTextSpan(review.user.name),
+                      const TextSpan(text: 'about his visit on '),
+                      _reviewDateTextSpan(review.visitDate.yearMonthDay),
+                      const TextSpan(text: ':'),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 5),
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(
-                  review.reply.unsafe,
+                  review.comment.unsafe,
                   style: const TextStyle(fontSize: Style.restaurantDetailsCommentTextSize),
                 ),
               ),
-            ],
-          ] else
-            Padding(
-              padding: const EdgeInsets.only(left: 5),
-              child: RichText(
-                text: TextSpan(
-                  children: [
-                    _reviewerNameTextSpan(review.user.name),
-                    const TextSpan(text: 'visited on '),
-                    _reviewDateTextSpan(review.visitDate.yearMonthDay),
-                  ],
+              if (review.reply.hasValue) ...[
+                const SizedBox(height: 7),
+                const Padding(
+                  padding: EdgeInsets.only(left: 5),
+                  child: Text(
+                    '''Owner's reply:''',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    review.reply.unsafe,
+                    style: const TextStyle(fontSize: Style.restaurantDetailsCommentTextSize),
+                  ),
+                ),
+              ],
+            ] else
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      _reviewerNameTextSpan(review.user.name),
+                      const TextSpan(text: 'visited on '),
+                      _reviewDateTextSpan(review.visitDate.yearMonthDay),
+                    ],
+                  ),
                 ),
               ),
-            ),
-        ],
-      );
+          ],
+        ),
+  );
 
   final ReviewIdentity review;
+  final void Function() onTap;
 }
 
 TextSpan _reviewerNameTextSpan(String name) => TextSpan(

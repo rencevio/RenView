@@ -78,6 +78,15 @@ Future<void> _middleware<State>(Store<State> store, dynamic action, Communicator
     );
 
     store.dispatch(ReviewCreatedAction(review: review.identity));
+  } else if (action is EditReviewAction) {
+    await communicator.editReview(
+      reviewId: action.reviewId,
+      rating: action.rating,
+      visitDate: action.visitDate,
+      comment: action.comment.valueOr(() => null),
+    );
+  } else if (action is ReplyToReviewAction) {
+    await communicator.replyToReview(reviewId: action.reviewId, reply: action.reply);
   }
 }
 

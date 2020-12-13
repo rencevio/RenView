@@ -130,21 +130,24 @@ abstract class $Restaurant {
   String get address;
   double get averageRating;
   int get totalReviews;
+  OtherUser get owner;
   Restaurant copyWith(
           {String id,
           String name,
           String address,
           double averageRating,
-          int totalReviews}) =>
+          int totalReviews,
+          OtherUser owner}) =>
       Restaurant(
           id: id ?? this.id,
           name: name ?? this.name,
           address: address ?? this.address,
           averageRating: averageRating ?? this.averageRating,
-          totalReviews: totalReviews ?? this.totalReviews);
+          totalReviews: totalReviews ?? this.totalReviews,
+          owner: owner ?? this.owner);
   @override
   String toString() =>
-      "Restaurant(id: $id, name: $name, address: $address, averageRating: $averageRating, totalReviews: $totalReviews)";
+      "Restaurant(id: $id, name: $name, address: $address, averageRating: $averageRating, totalReviews: $totalReviews, owner: $owner)";
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
@@ -152,7 +155,8 @@ abstract class $Restaurant {
       name == other.name &&
       address == other.address &&
       averageRating == other.averageRating &&
-      totalReviews == other.totalReviews;
+      totalReviews == other.totalReviews &&
+      owner == other.owner;
   @override
   int get hashCode {
     var result = 17;
@@ -161,6 +165,7 @@ abstract class $Restaurant {
     result = 37 * result + address.hashCode;
     result = 37 * result + averageRating.hashCode;
     result = 37 * result + totalReviews.hashCode;
+    result = 37 * result + owner.hashCode;
     return result;
   }
 }
@@ -177,6 +182,8 @@ class Restaurant$ {
       (s_, averageRating) => s_.copyWith(averageRating: averageRating));
   static final totalReviews = Lens<Restaurant, int>((s_) => s_.totalReviews,
       (s_, totalReviews) => s_.copyWith(totalReviews: totalReviews));
+  static final owner = Lens<Restaurant, OtherUser>(
+      (s_) => s_.owner, (s_, owner) => s_.copyWith(owner: owner));
 }
 
 // ignore_for_file: join_return_with_assignment
@@ -335,6 +342,9 @@ Restaurant _$RestaurantFromJson(Map<String, dynamic> json) {
     address: json['address'] as String,
     averageRating: (json['averageRating'] as num)?.toDouble(),
     totalReviews: json['totalReviews'] as int,
+    owner: json['owner'] == null
+        ? null
+        : OtherUser.fromJson(json['owner'] as Map<String, dynamic>),
   );
 }
 
@@ -345,6 +355,7 @@ Map<String, dynamic> _$RestaurantToJson(Restaurant instance) =>
       'address': instance.address,
       'averageRating': instance.averageRating,
       'totalReviews': instance.totalReviews,
+      'owner': instance.owner,
     };
 
 Reviews _$ReviewsFromJson(Map<String, dynamic> json) {

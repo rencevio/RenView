@@ -1,4 +1,5 @@
 import 'package:communicator/communicator.dart';
+import 'package:plain_optional/plain_optional.dart';
 
 import 'actions.dart';
 import 'state.dart';
@@ -19,10 +20,25 @@ DashboardState dashboardReducer(DashboardState state, dynamic action) {
     return state.copyWith(restaurants: state.restaurants.where((r) => r.id != action.id).toList(growable: false));
   } else if (action is ReviewsForRestaurantFetchedAction) {
     return state.copyWith(
-      reviews: state.reviews.followedBy(action.reviews).toList(growable: false),
+      reviews: state.reviews
+          .where((r) => r.restaurantId != action.restaurantId)
+          .followedBy(action.reviews)
+          .toList(growable: false),
     );
   } else if (action is ReviewCreatedAction) {
     return state.copyWith(reviews: state.reviews.followedBy([action.review]).toList(growable: false));
+  } else if (action is EditReviewAction) {
+    return state.copyWith(
+        reviews: state.reviews
+            .map((r) => r.id == action.reviewId
+                ? r.copyWith(rating: action.rating, comment: action.comment, visitDate: action.visitDate)
+                : r)
+            .toList(growable: false));
+  } else if (action is ReplyToReviewAction) {
+    return state.copyWith(
+        reviews: state.reviews
+            .map((r) => r.id == action.reviewId ? r.copyWith(reply: Optional(action.reply)) : r)
+            .toList(growable: false));
   }
 
   return state;

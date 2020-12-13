@@ -9,6 +9,8 @@ import '../style.dart';
 class ReviewList extends StatelessWidget {
   const ReviewList({
     @required this.reviews,
+    @required this.isReviewInteractive,
+    @required this.onReviewTapped,
     Key key,
   }) : super(key: key);
 
@@ -37,7 +39,11 @@ class ReviewList extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 5),
-        Review(review: highestAndLowestReviews.key),
+        Review(
+          review: highestAndLowestReviews.key,
+          onTap: () =>
+              isReviewInteractive(highestAndLowestReviews.key) ? onReviewTapped(highestAndLowestReviews.key) : null,
+        ),
         const SizedBox(height: 10),
         const Text(
           'Lowest rated review:',
@@ -47,7 +53,11 @@ class ReviewList extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 5),
-        Review(review: highestAndLowestReviews.value),
+        Review(
+          review: highestAndLowestReviews.value,
+          onTap: () =>
+              isReviewInteractive(highestAndLowestReviews.value) ? onReviewTapped(highestAndLowestReviews.value) : null,
+        ),
         const SizedBox(height: 10),
         const Divider(),
         const SizedBox(height: 10),
@@ -61,13 +71,18 @@ class ReviewList extends StatelessWidget {
         const SizedBox(height: 5),
         ..._orderReviews(reviews).getRangeSafe(0, Style.restaurantDetailsLastReviewsToDisplay).map((r) => Padding(
               padding: const EdgeInsets.only(bottom: 15),
-              child: Review(review: r),
+              child: Review(
+                review: r,
+                onTap: () => isReviewInteractive(r) ? onReviewTapped(r) : null,
+              ),
             )),
       ],
     );
   }
 
   final List<ReviewIdentity> reviews;
+  final bool Function(ReviewIdentity) isReviewInteractive;
+  final void Function(ReviewIdentity) onReviewTapped;
 }
 
 List<ReviewIdentity> _orderReviews(List<ReviewIdentity> reviews) =>

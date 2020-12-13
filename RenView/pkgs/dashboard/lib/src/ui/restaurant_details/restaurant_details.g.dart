@@ -16,26 +16,30 @@ abstract class $_ViewModel {
   UserIdentity get user;
   RestaurantIdentity get restaurant;
   List<ReviewIdentity> get reviews;
+  bool Function(ReviewIdentity) get isReviewInteractive;
   _ViewModel copyWith(
           {Dispatcher dispatcher,
           UserIdentity user,
           RestaurantIdentity restaurant,
-          List<ReviewIdentity> reviews}) =>
+          List<ReviewIdentity> reviews,
+          bool Function(ReviewIdentity) isReviewInteractive}) =>
       _ViewModel(
           dispatcher: dispatcher ?? this.dispatcher,
           user: user ?? this.user,
           restaurant: restaurant ?? this.restaurant,
-          reviews: reviews ?? this.reviews);
+          reviews: reviews ?? this.reviews,
+          isReviewInteractive: isReviewInteractive ?? this.isReviewInteractive);
   @override
   String toString() =>
-      "_ViewModel(dispatcher: $dispatcher, user: $user, restaurant: $restaurant, reviews: $reviews)";
+      "_ViewModel(dispatcher: $dispatcher, user: $user, restaurant: $restaurant, reviews: $reviews, isReviewInteractive: $isReviewInteractive)";
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
       dispatcher == other.dispatcher &&
       user == other.user &&
       restaurant == other.restaurant &&
-      reviews == other.reviews;
+      reviews == other.reviews &&
+      isReviewInteractive == other.isReviewInteractive;
   @override
   int get hashCode {
     var result = 17;
@@ -43,6 +47,7 @@ abstract class $_ViewModel {
     result = 37 * result + user.hashCode;
     result = 37 * result + restaurant.hashCode;
     result = 37 * result + reviews.hashCode;
+    result = 37 * result + isReviewInteractive.hashCode;
     return result;
   }
 }
@@ -57,4 +62,9 @@ class _ViewModel$ {
       (s_, restaurant) => s_.copyWith(restaurant: restaurant));
   static final reviews = Lens<_ViewModel, List<ReviewIdentity>>(
       (s_) => s_.reviews, (s_, reviews) => s_.copyWith(reviews: reviews));
+  static final isReviewInteractive =
+      Lens<_ViewModel, bool Function(ReviewIdentity)>(
+          (s_) => s_.isReviewInteractive,
+          (s_, isReviewInteractive) =>
+              s_.copyWith(isReviewInteractive: isReviewInteractive));
 }

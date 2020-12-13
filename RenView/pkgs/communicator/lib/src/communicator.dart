@@ -13,8 +13,7 @@ import 'request_builder.dart';
 class Communicator {
   Communicator({
     @required Optional<String> Function() getSessionToken,
-  })
-      : requestBuilder = RequestBuilder(getSessionToken: getSessionToken),
+  })  : requestBuilder = RequestBuilder(getSessionToken: getSessionToken),
         httpClient = HttpClient();
 
   Future<LoginResponse> login({
@@ -154,14 +153,44 @@ class Communicator {
         'restaurant': restaurantId,
         'rating': rating.toString(),
         'visitDate': visitDate.yearMonthDay,
-        if (comment != null && comment.isNotEmpty)
-          'comment': comment,
+        if (comment != null && comment.isNotEmpty) 'comment': comment,
       },
     );
 
     final response = await httpClient.request('POST', request);
 
     return Review.fromJson(response.body as Map<String, dynamic>);
+  }
+
+  Future<void> editReview({
+    @required String reviewId,
+    @required int rating,
+    @required DateTime visitDate,
+    String comment,
+  }) async {
+    final request = requestBuilder.build(
+      endpoint: 'reviews/$reviewId',
+      authorized: true,
+      body: <String, dynamic>{
+        'rating': rating.toString(),
+        'visitDate': visitDate.yearMonthDay,
+        if (comment != null && comment.isNotEmpty) 'comment': comment,
+      },
+    );
+
+    await httpClient.request('PUT', request);
+  }
+
+  Future<void> replyToReview({@required String reviewId, @required String reply}) async {
+    final request = requestBuilder.build(
+      endpoint: 'reviews/$reviewId/reply',
+      authorized: true,
+      body: <String, dynamic>{
+        'reply': reply,
+      },
+    );
+
+    await httpClient.request('POST', request);
   }
 
   final RequestBuilder requestBuilder;

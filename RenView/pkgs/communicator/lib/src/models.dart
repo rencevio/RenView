@@ -81,6 +81,7 @@ class Restaurant extends $Restaurant {
     @required this.address,
     @required this.averageRating,
     @required this.totalReviews,
+    @required this.owner,
   });
 
   factory Restaurant.fromJson(Map<String, dynamic> json) => _$RestaurantFromJson(json);
@@ -91,6 +92,7 @@ class Restaurant extends $Restaurant {
         address: address,
         averageRating: averageRating,
         totalReviews: totalReviews,
+        owner: owner.identity,
       );
 
   final String id;
@@ -98,6 +100,7 @@ class Restaurant extends $Restaurant {
   final String address;
   final double averageRating;
   final int totalReviews;
+  final OtherUser owner;
 }
 
 @JsonSerializable()

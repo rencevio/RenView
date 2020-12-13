@@ -84,6 +84,7 @@ class RestaurantIdentity extends $RestaurantIdentity {
     @required this.address,
     @required this.averageRating,
     @required this.totalReviews,
+    @required this.owner,
   });
 
   final String id;
@@ -91,6 +92,7 @@ class RestaurantIdentity extends $RestaurantIdentity {
   final String address;
   final double averageRating;
   final int totalReviews;
+  final OtherUserIdentity owner;
 }
 
 @FunctionalData()

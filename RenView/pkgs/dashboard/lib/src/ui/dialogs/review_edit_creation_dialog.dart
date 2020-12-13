@@ -7,28 +7,75 @@ import 'package:utils/utils.dart';
 
 Future<void> showReviewCreationDialog(
   BuildContext context, {
+  @required Dispatcher dispatcher,
   @required String restaurantId,
 }) =>
     showDialog(
       context: context,
-      child: CreateReviewDialog(
-        restaurantId: restaurantId,
+      child: CreateEditReviewDialog(
+        headerTitle: 'Create a review',
+        actionTitle: 'Create',
+        onConfirm: ({comment, rating, visitDate}) => dispatcher(
+          CreateReviewAction(
+            restaurantId: restaurantId,
+            comment: Optional(comment),
+            rating: rating,
+            visitDate: visitDate,
+          ),
+        ),
       ),
     );
 
-class CreateReviewDialog extends StatefulWidget {
-  const CreateReviewDialog({
-    @required this.restaurantId,
+Future<void> showReviewEditDialog(
+  BuildContext context, {
+  @required Dispatcher dispatcher,
+  @required String reviewId,
+  @required int rating,
+  @required DateTime visitDate,
+  String comment,
+}) =>
+    showDialog(
+      context: context,
+      child: CreateEditReviewDialog(
+        comment: comment,
+        rating: rating,
+        visitDate: visitDate,
+        headerTitle: 'Edit your review',
+        actionTitle: 'Edit',
+        onConfirm: ({comment, rating, visitDate}) => dispatcher(
+          EditReviewAction(
+            reviewId: reviewId,
+            comment: Optional(comment),
+            rating: rating,
+            visitDate: visitDate,
+          ),
+        ),
+      ),
+    );
+
+class CreateEditReviewDialog extends StatefulWidget {
+  const CreateEditReviewDialog({
+    @required this.onConfirm,
+    @required this.headerTitle,
+    @required this.actionTitle,
+    this.comment,
+    this.rating,
+    this.visitDate,
     Key key,
   }) : super(key: key);
 
   @override
-  _CreateReviewDialogState createState() => _CreateReviewDialogState();
+  _CreateEditReviewDialogState createState() => _CreateEditReviewDialogState();
 
-  final String restaurantId;
+  final String comment;
+  final int rating;
+  final DateTime visitDate;
+  final String headerTitle;
+  final String actionTitle;
+  final void Function({@required String comment, @required int rating, @required DateTime visitDate}) onConfirm;
 }
 
-class _CreateReviewDialogState extends State<CreateReviewDialog> {
+class _CreateEditReviewDialogState extends State<CreateEditReviewDialog> {
   final _commentController = TextEditingController();
   DateTime visitDate;
 
@@ -36,29 +83,34 @@ class _CreateReviewDialogState extends State<CreateReviewDialog> {
   final _formDateKey = GlobalKey<_DateFormFieldState>();
   final _formRatingKey = GlobalKey<_RatingFormFieldState>();
 
+
+  @override
+  void initState() {
+    super.initState();
+
+    _commentController.text = widget.comment;
+  }
+
   @override
   Widget build(BuildContext context) => Consumer<Dispatcher>(
         builder: (context, dispatcher, _) => AlertDialog(
           contentPadding: const EdgeInsets.only(left: 15, right: 15, top: 10),
-          title: const Text('Create a review'),
+          title: Text(widget.headerTitle),
           actions: [
             TextButton(
               onPressed: () {
                 FocusScope.of(context).unfocus();
 
                 if (_formKey.currentState.validate()) {
-                  dispatcher(
-                    CreateReviewAction(
-                      restaurantId: widget.restaurantId,
-                      comment: Optional(_commentController.text),
-                      rating: _formRatingKey.currentState.currentRating,
-                      visitDate: _formDateKey.currentState.visitDate,
-                    ),
+                  widget.onConfirm(
+                    comment: _commentController.text,
+                    rating: _formRatingKey.currentState.currentRating,
+                    visitDate: _formDateKey.currentState.visitDate,
                   );
                   Navigator.of(context).pop();
                 }
               },
-              child: const Text('Create'),
+              child: Text(widget.actionTitle),
             ),
           ],
           content: Builder(
@@ -75,12 +127,14 @@ class _CreateReviewDialogState extends State<CreateReviewDialog> {
                     children: [
                       _RatingFormField(
                         key: _formRatingKey,
+                        initialValue: widget.rating,
                         validator: (rating) => rating == null ? 'Please select rating' : null,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 20, left: 5),
                         child: _DateFormField(
                           key: _formDateKey,
+                          initialValue: widget.visitDate,
                           validator: (date) => date == null ? 'Please specify the date of visit' : null,
                         ),
                       ),
@@ -112,11 +166,13 @@ class _CreateReviewDialogState extends State<CreateReviewDialog> {
 
 class _DateFormField extends FormField<DateTime> {
   _DateFormField({
+    @required DateTime initialValue,
     Key key,
     String Function(DateTime value) validator,
   }) : super(
           key: key,
           validator: validator,
+          initialValue: initialValue,
           builder: (field) => Builder(
             builder: (context) {
               final state = field as _DateFormFieldState;
@@ -174,6 +230,12 @@ class _DateFormFieldState extends FormFieldState<DateTime> {
   DateTime visitDate;
 
   @override
+  void initState() {
+    super.initState();
+    visitDate = widget.initialValue;
+  }
+
+  @override
   void didChange(DateTime value) {
     super.didChange(value);
 
@@ -185,10 +247,12 @@ class _DateFormFieldState extends FormFieldState<DateTime> {
 
 class _RatingFormField extends FormField<int> {
   _RatingFormField({
+    @required int initialValue,
     Key key,
     String Function(int rating) validator,
   }) : super(
           key: key,
+          initialValue: initialValue,
           validator: validator,
           builder: (field) => Builder(
             builder: (context) {
@@ -232,6 +296,13 @@ class _RatingFormField extends FormField<int> {
 
 class _RatingFormFieldState extends FormFieldState<int> {
   int currentRating;
+
+
+  @override
+  void initState() {
+    super.initState();
+    currentRating = widget.initialValue;
+  }
 
   @override
   void didChange(int value) {
