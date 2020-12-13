@@ -15,30 +15,36 @@ abstract class $DashboardState {
   List<RestaurantIdentity> get restaurants;
   List<ReviewIdentity> get reviews;
   bool get refreshingRestaurantList;
+  Set<String> get refreshingReviewForRestaurants;
   DashboardState copyWith(
           {List<RestaurantIdentity> restaurants,
           List<ReviewIdentity> reviews,
-          bool refreshingRestaurantList}) =>
+          bool refreshingRestaurantList,
+          Set<String> refreshingReviewForRestaurants}) =>
       DashboardState(
           restaurants: restaurants ?? this.restaurants,
           reviews: reviews ?? this.reviews,
           refreshingRestaurantList:
-              refreshingRestaurantList ?? this.refreshingRestaurantList);
+              refreshingRestaurantList ?? this.refreshingRestaurantList,
+          refreshingReviewForRestaurants: refreshingReviewForRestaurants ??
+              this.refreshingReviewForRestaurants);
   @override
   String toString() =>
-      "DashboardState(restaurants: $restaurants, reviews: $reviews, refreshingRestaurantList: $refreshingRestaurantList)";
+      "DashboardState(restaurants: $restaurants, reviews: $reviews, refreshingRestaurantList: $refreshingRestaurantList, refreshingReviewForRestaurants: $refreshingReviewForRestaurants)";
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
       const DeepCollectionEquality().equals(restaurants, other.restaurants) &&
       const DeepCollectionEquality().equals(reviews, other.reviews) &&
-      refreshingRestaurantList == other.refreshingRestaurantList;
+      refreshingRestaurantList == other.refreshingRestaurantList &&
+      refreshingReviewForRestaurants == other.refreshingReviewForRestaurants;
   @override
   int get hashCode {
     var result = 17;
     result = 37 * result + const DeepCollectionEquality().hash(restaurants);
     result = 37 * result + const DeepCollectionEquality().hash(reviews);
     result = 37 * result + refreshingRestaurantList.hashCode;
+    result = 37 * result + refreshingReviewForRestaurants.hashCode;
     return result;
   }
 }
@@ -53,4 +59,9 @@ class DashboardState$ {
       (s_) => s_.refreshingRestaurantList,
       (s_, refreshingRestaurantList) =>
           s_.copyWith(refreshingRestaurantList: refreshingRestaurantList));
+  static final refreshingReviewForRestaurants =
+      Lens<DashboardState, Set<String>>(
+          (s_) => s_.refreshingReviewForRestaurants,
+          (s_, refreshingReviewForRestaurants) => s_.copyWith(
+              refreshingReviewForRestaurants: refreshingReviewForRestaurants));
 }

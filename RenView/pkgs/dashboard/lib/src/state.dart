@@ -13,6 +13,7 @@ class DashboardState extends $DashboardState {
     @required this.restaurants,
     @required this.reviews,
     @required this.refreshingRestaurantList,
+    @required this.refreshingReviewForRestaurants,
   });
 
   const DashboardState.initial()
@@ -20,6 +21,7 @@ class DashboardState extends $DashboardState {
           restaurants: const [],
           reviews: const [],
           refreshingRestaurantList: false,
+          refreshingReviewForRestaurants: const {},
         );
 
   @CustomEquality(DeepCollectionEquality())
@@ -29,4 +31,5 @@ class DashboardState extends $DashboardState {
   final List<ReviewIdentity> reviews;
 
   final bool refreshingRestaurantList;
+  final Set<String> refreshingReviewForRestaurants;
 }

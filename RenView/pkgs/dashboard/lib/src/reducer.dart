@@ -18,12 +18,16 @@ DashboardState dashboardReducer(DashboardState state, dynamic action) {
             .toList(growable: false));
   } else if (action is DeleteRestaurantAction) {
     return state.copyWith(restaurants: state.restaurants.where((r) => r.id != action.id).toList(growable: false));
+  } else if (action is FetchReviewsForRestaurantAction) {
+    return state.copyWith(
+        refreshingReviewForRestaurants: state.refreshingReviewForRestaurants.toSet()..add(action.restaurantId));
   } else if (action is ReviewsForRestaurantFetchedAction) {
     return state.copyWith(
       reviews: state.reviews
           .where((r) => r.restaurantId != action.restaurantId)
           .followedBy(action.reviews)
           .toList(growable: false),
+      refreshingReviewForRestaurants: state.refreshingReviewForRestaurants.toSet()..remove(action.restaurantId),
     );
   } else if (action is ReviewCreatedAction) {
     return state.copyWith(reviews: state.reviews.followedBy([action.review]).toList(growable: false));

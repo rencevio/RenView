@@ -11,6 +11,7 @@ import '../../state.dart';
 import '../dialogs/restaurant_deletion_confirmation_dialog.dart';
 import '../dialogs/restaurant_edit_dialog.dart';
 import '../dialogs/review_edit_creation_dialog.dart';
+import '../dialogs/review_reply_dialog.dart';
 import '../style.dart';
 import 'restaurant_details_action_sheet.dart';
 import 'review_list.dart';
@@ -49,6 +50,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
               reviews: state.reviews.where((r) => r.restaurantId == widget.restaurantId).toList(growable: false),
               isReviewInteractive: (review) =>
                   review.user.id == userIdentity.id || !review.reply.hasValue && restaurant.owner.id == userIdentity.id,
+              fetchingReviews: state.refreshingReviewForRestaurants.contains(restaurant.id),
             );
           }
         },
@@ -142,7 +144,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                           ),
                         ),
                       const SizedBox(height: 15),
-                      if (viewModel.reviews == null)
+                      if (viewModel.fetchingReviews)
                         const Center(child: CupertinoActivityIndicator())
                       else
                         ReviewList(
@@ -158,7 +160,13 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                                 rating: review.rating,
                                 visitDate: review.visitDate,
                               );
-                            // todo: else create reply
+                            else
+                              showDialog<void>(
+                                context: context,
+                                builder: (context) => ReplyToReviewDialog(
+                                  reviewId: review.id,
+                                ),
+                              );
                           },
                         ),
                     ],
@@ -178,6 +186,7 @@ class _ViewModel extends $_ViewModel {
     @required this.user,
     @required this.restaurant,
     @required this.isReviewInteractive,
+    @required this.fetchingReviews,
     this.reviews,
   });
 
@@ -188,6 +197,7 @@ class _ViewModel extends $_ViewModel {
   final RestaurantIdentity restaurant;
   final List<ReviewIdentity> reviews;
   final bool Function(ReviewIdentity) isReviewInteractive;
+  final bool fetchingReviews;
 }
 
 class _AverageRating extends StatelessWidget {

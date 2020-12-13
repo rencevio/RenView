@@ -17,21 +17,24 @@ abstract class $_ViewModel {
   RestaurantIdentity get restaurant;
   List<ReviewIdentity> get reviews;
   bool Function(ReviewIdentity) get isReviewInteractive;
+  bool get fetchingReviews;
   _ViewModel copyWith(
           {Dispatcher dispatcher,
           UserIdentity user,
           RestaurantIdentity restaurant,
           List<ReviewIdentity> reviews,
-          bool Function(ReviewIdentity) isReviewInteractive}) =>
+          bool Function(ReviewIdentity) isReviewInteractive,
+          bool fetchingReviews}) =>
       _ViewModel(
           dispatcher: dispatcher ?? this.dispatcher,
           user: user ?? this.user,
           restaurant: restaurant ?? this.restaurant,
           reviews: reviews ?? this.reviews,
-          isReviewInteractive: isReviewInteractive ?? this.isReviewInteractive);
+          isReviewInteractive: isReviewInteractive ?? this.isReviewInteractive,
+          fetchingReviews: fetchingReviews ?? this.fetchingReviews);
   @override
   String toString() =>
-      "_ViewModel(dispatcher: $dispatcher, user: $user, restaurant: $restaurant, reviews: $reviews, isReviewInteractive: $isReviewInteractive)";
+      "_ViewModel(dispatcher: $dispatcher, user: $user, restaurant: $restaurant, reviews: $reviews, isReviewInteractive: $isReviewInteractive, fetchingReviews: $fetchingReviews)";
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
@@ -39,7 +42,8 @@ abstract class $_ViewModel {
       user == other.user &&
       restaurant == other.restaurant &&
       reviews == other.reviews &&
-      isReviewInteractive == other.isReviewInteractive;
+      isReviewInteractive == other.isReviewInteractive &&
+      fetchingReviews == other.fetchingReviews;
   @override
   int get hashCode {
     var result = 17;
@@ -48,6 +52,7 @@ abstract class $_ViewModel {
     result = 37 * result + restaurant.hashCode;
     result = 37 * result + reviews.hashCode;
     result = 37 * result + isReviewInteractive.hashCode;
+    result = 37 * result + fetchingReviews.hashCode;
     return result;
   }
 }
@@ -67,4 +72,7 @@ class _ViewModel$ {
           (s_) => s_.isReviewInteractive,
           (s_, isReviewInteractive) =>
               s_.copyWith(isReviewInteractive: isReviewInteractive));
+  static final fetchingReviews = Lens<_ViewModel, bool>(
+      (s_) => s_.fetchingReviews,
+      (s_, fetchingReviews) => s_.copyWith(fetchingReviews: fetchingReviews));
 }
