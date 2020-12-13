@@ -19,11 +19,10 @@ DashboardState dashboardReducer(DashboardState state, dynamic action) {
     return state.copyWith(restaurants: state.restaurants.where((r) => r.id != action.id).toList(growable: false));
   } else if (action is ReviewsForRestaurantFetchedAction) {
     return state.copyWith(
-      reviewsForRestaurant: Map.from(state.reviewsForRestaurant)
-        ..addEntries(
-          [MapEntry(action.restaurantId, action.reviews)],
-        ),
+      reviews: state.reviews.followedBy(action.reviews).toList(growable: false),
     );
+  } else if (action is ReviewCreatedAction) {
+    return state.copyWith(reviews: state.reviews.followedBy([action.review]).toList(growable: false));
   }
 
   return state;

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:common_state/common_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -57,7 +59,7 @@ class ReviewList extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 5),
-        ..._orderReviews(reviews).getRange(0, Style.restaurantDetailsLastReviewsToDisplay).map((r) => Padding(
+        ..._orderReviews(reviews).getRangeSafe(0, Style.restaurantDetailsLastReviewsToDisplay).map((r) => Padding(
               padding: const EdgeInsets.only(bottom: 15),
               child: Review(review: r),
             )),
@@ -69,7 +71,12 @@ class ReviewList extends StatelessWidget {
 }
 
 List<ReviewIdentity> _orderReviews(List<ReviewIdentity> reviews) =>
-    reviews.toList(growable: false)..sort((r1, r2) => r2.visitDate.compareTo(r1.visitDate));
+    reviews.toList(growable: true)..sort((r1, r2) => r2.visitDate.compareTo(r1.visitDate));
+
+extension on List<ReviewIdentity> {
+  List<ReviewIdentity> getRangeSafe(int start, int end) =>
+      getRange(0, min(Style.restaurantDetailsLastReviewsToDisplay, length)).toList(growable: false);
+}
 
 MapEntry<ReviewIdentity, ReviewIdentity> _getFirstHighestAndLowestRatedReviews(List<ReviewIdentity> reviews) {
   ReviewIdentity highestReview;

@@ -20,8 +20,6 @@ Future<void> _middleware(Store<AppState> store, dynamic action) async {
     final currentUser = store.state.currentUserIdentity.valueOr(() => null);
     assert(currentUser != null, '$FetchRestaurantsAction called without active user identity');
 
-    print(currentUser);
-
     if (currentUser.role == UserRole.owner) {
       store.dispatch(FetchRestaurantsForOwnerAction(ownerId: currentUser.id));
     } else {

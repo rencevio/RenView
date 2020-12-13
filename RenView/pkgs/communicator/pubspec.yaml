@@ -19,6 +19,8 @@ dependencies:
 
   common_state:
     path: ../common_state
+  utils:
+    path: ../utils
 
 dev_dependencies:
   flutter_test:

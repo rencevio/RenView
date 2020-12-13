@@ -21,6 +21,7 @@ dependencies:
   build_runner:
   functional_data_generator:
   pull_to_refresh:
+  plain_optional:
   utils:
     path: ../utils
 

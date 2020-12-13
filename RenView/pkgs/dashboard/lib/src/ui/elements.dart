@@ -1,7 +1,7 @@
 import 'package:common_state/common_state.dart';
 import 'package:flutter/widgets.dart';
+import 'package:utils/utils.dart';
 
-import '../utils.dart';
 import 'style.dart';
 
 class RestaurantName extends StatelessWidget {

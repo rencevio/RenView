@@ -12,23 +12,35 @@ part of 'restaurant_details.dart';
 // ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
 abstract class $_ViewModel {
   const $_ViewModel();
+  Dispatcher get dispatcher;
+  UserIdentity get user;
   RestaurantIdentity get restaurant;
   List<ReviewIdentity> get reviews;
   _ViewModel copyWith(
-          {RestaurantIdentity restaurant, List<ReviewIdentity> reviews}) =>
+          {Dispatcher dispatcher,
+          UserIdentity user,
+          RestaurantIdentity restaurant,
+          List<ReviewIdentity> reviews}) =>
       _ViewModel(
+          dispatcher: dispatcher ?? this.dispatcher,
+          user: user ?? this.user,
           restaurant: restaurant ?? this.restaurant,
           reviews: reviews ?? this.reviews);
   @override
-  String toString() => "_ViewModel(restaurant: $restaurant, reviews: $reviews)";
+  String toString() =>
+      "_ViewModel(dispatcher: $dispatcher, user: $user, restaurant: $restaurant, reviews: $reviews)";
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
+      dispatcher == other.dispatcher &&
+      user == other.user &&
       restaurant == other.restaurant &&
       reviews == other.reviews;
   @override
   int get hashCode {
     var result = 17;
+    result = 37 * result + dispatcher.hashCode;
+    result = 37 * result + user.hashCode;
     result = 37 * result + restaurant.hashCode;
     result = 37 * result + reviews.hashCode;
     return result;
@@ -36,6 +48,10 @@ abstract class $_ViewModel {
 }
 
 class _ViewModel$ {
+  static final dispatcher = Lens<_ViewModel, Dispatcher>((s_) => s_.dispatcher,
+      (s_, dispatcher) => s_.copyWith(dispatcher: dispatcher));
+  static final user = Lens<_ViewModel, UserIdentity>(
+      (s_) => s_.user, (s_, user) => s_.copyWith(user: user));
   static final restaurant = Lens<_ViewModel, RestaurantIdentity>(
       (s_) => s_.restaurant,
       (s_, restaurant) => s_.copyWith(restaurant: restaurant));

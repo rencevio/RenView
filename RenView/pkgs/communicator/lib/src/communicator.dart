@@ -3,6 +3,7 @@ import 'dart:io' as io show HttpHeaders;
 
 import 'package:meta/meta.dart';
 import 'package:plain_optional/plain_optional.dart';
+import 'package:utils/utils.dart';
 
 import 'api_call_results.dart';
 import 'http_client.dart';
@@ -138,6 +139,29 @@ class Communicator {
     final response = await httpClient.request('GET', request);
 
     return Reviews.fromJson(response.body as List<dynamic>);
+  }
+
+  Future<Review> createReview({
+    @required String restaurantId,
+    @required int rating,
+    @required DateTime visitDate,
+    String comment,
+  }) async {
+    final request = requestBuilder.build(
+      endpoint: 'reviews',
+      authorized: true,
+      body: <String, dynamic>{
+        'restaurant': restaurantId,
+        'rating': rating.toString(),
+        'visitDate': visitDate.yearMonthDay,
+        if (comment != null && comment.isNotEmpty)
+          'comment': comment,
+      },
+    );
+
+    final response = await httpClient.request('POST', request);
+
+    return Review.fromJson(response.body as Map<String, dynamic>);
   }
 
   final RequestBuilder requestBuilder;

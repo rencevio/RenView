@@ -11,14 +11,14 @@ part 'state.g.dart';
 class DashboardState extends $DashboardState {
   const DashboardState({
     @required this.restaurants,
-    @required this.reviewsForRestaurant,
+    @required this.reviews,
     @required this.refreshingRestaurantList,
   });
 
   const DashboardState.initial()
       : this(
           restaurants: const [],
-          reviewsForRestaurant: const {},
+          reviews: const [],
           refreshingRestaurantList: false,
         );
 
@@ -26,7 +26,7 @@ class DashboardState extends $DashboardState {
   final List<RestaurantIdentity> restaurants;
 
   @CustomEquality(DeepCollectionEquality())
-  final Map<String, List<ReviewIdentity>> reviewsForRestaurant;
+  final List<ReviewIdentity> reviews;
 
   final bool refreshingRestaurantList;
 }

@@ -10,6 +10,7 @@ import 'package:utils/utils.dart';
 import '../../state.dart';
 import '../dialogs/restaurant_deletion_confirmation_dialog.dart';
 import '../dialogs/restaurant_edit_dialog.dart';
+import '../dialogs/review_creation_dialog.dart';
 import '../style.dart';
 import 'restaurant_details_action_sheet.dart';
 import 'review_list.dart';
@@ -34,122 +35,135 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
   _ViewModel lastKnownDetails;
 
   @override
-  Widget build(BuildContext context) => Consumer2<Dispatcher, UserIdentity>(
-        builder: (context, dispatcher, userIdentity, _) => Selector<DashboardState, _ViewModel>(
-          selector: (context, state) {
-            if (state.restaurants.where((r) => r.id == widget.restaurantId).isEmpty) {
-              return lastKnownDetails;
-            } else {
-              return _ViewModel(
-                restaurant: state.restaurants.singleWhere((r) => r.id == widget.restaurantId),
-                reviews: state.reviewsForRestaurant[widget.restaurantId],
-              );
-            }
-          },
-          builder: (context, viewModel, _) {
-            lastKnownDetails = viewModel;
+  Widget build(BuildContext context) => Selector3<Dispatcher, UserIdentity, DashboardState, _ViewModel>(
+        selector: (context, dispatcher, userIdentity, state) {
+          if (state.restaurants.where((r) => r.id == widget.restaurantId).isEmpty) {
+            return lastKnownDetails;
+          } else {
+            return _ViewModel(
+              dispatcher: dispatcher,
+              user: userIdentity,
+              restaurant: state.restaurants.singleWhere((r) => r.id == widget.restaurantId),
+              reviews: state.reviews.where((r) => r.restaurantId == widget.restaurantId).toList(growable: false),
+            );
+          }
+        },
+        builder: (context, viewModel, _) {
+          lastKnownDetails = viewModel;
 
-            return Scaffold(
-              appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(Style.appBarHeight),
-                child: AppBar(
-                  title: FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: Text(viewModel.restaurant.name),
-                  ),
-                  actions: [
-                    if (userIdentity.role != UserRole.user)
-                      IconButton(
-                        icon: const Icon(Icons.settings),
-                        onPressed: () {
-                          showCupertinoModalPopup<void>(
-                            context: context,
-                            builder: (context) => RestaurantDetailsSheet(
-                              restaurant: viewModel.restaurant,
-                              onEdit: () => showRestaurantEditDialog(
-                                context,
-                                name: viewModel.restaurant.name,
-                                address: viewModel.restaurant.address,
-                                onEdit: ({name, address}) {
-                                  if (name != null || address != null)
-                                    dispatcher(
-                                        EditRestaurantAction(id: widget.restaurantId, name: name, address: address));
+          return Scaffold(
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(Style.appBarHeight),
+              child: AppBar(
+                title: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(viewModel.restaurant.name),
+                ),
+                actions: [
+                  if (viewModel.user.role != UserRole.user)
+                    IconButton(
+                      icon: const Icon(Icons.settings),
+                      onPressed: () {
+                        showCupertinoModalPopup<void>(
+                          context: context,
+                          builder: (context) => RestaurantDetailsSheet(
+                            restaurant: viewModel.restaurant,
+                            onEdit: () => showRestaurantEditDialog(
+                              context,
+                              name: viewModel.restaurant.name,
+                              address: viewModel.restaurant.address,
+                              onEdit: ({name, address}) {
+                                if (name != null || address != null)
+                                  viewModel.dispatcher(
+                                      EditRestaurantAction(id: widget.restaurantId, name: name, address: address));
+                              },
+                            ),
+                            onDelete: () => showDialog<void>(
+                              context: context,
+                              builder: (context) => RestaurantDeletionConfirmationDialog(
+                                onDelete: () {
+                                  Navigator.of(context).pop();
+                                  viewModel.dispatcher(DeleteRestaurantAction(id: widget.restaurantId));
                                 },
                               ),
-                              onDelete: () => showDialog<void>(
-                                context: context,
-                                builder: (context) => RestaurantDeletionConfirmationDialog(
-                                  onDelete: () {
-                                    Navigator.of(context).pop();
-                                    dispatcher(DeleteRestaurantAction(id: widget.restaurantId));
-                                  },
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                ],
+              ),
+            ),
+            body: SingleChildScrollView(
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8, top: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              const WidgetSpan(
+                                child: Padding(
+                                  padding: EdgeInsets.only(right: 3),
+                                  child: Icon(Icons.location_on),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      )
-                  ],
-                ),
-              ),
-              body: SingleChildScrollView(
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8, right: 8, top: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                const WidgetSpan(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 3),
-                                    child: Icon(Icons.location_on),
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: viewModel.restaurant.address,
-                                  style: const TextStyle(fontSize: Style.restaurantDetailsAddressTextSize),
-                                )
-                              ],
-                            ),
+                              TextSpan(
+                                text: viewModel.restaurant.address,
+                                style: const TextStyle(fontSize: Style.restaurantDetailsAddressTextSize),
+                              )
+                            ],
                           ),
                         ),
-                        if (viewModel.restaurant.totalReviews > 0)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: _AverageRating(
-                              viewModel.restaurant.averageRating,
-                              totalReviews: viewModel.restaurant.totalReviews,
-                            ),
+                      ),
+                      if (viewModel.restaurant.totalReviews > 0)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: _AverageRating(
+                            viewModel.restaurant.averageRating,
+                            totalReviews: viewModel.restaurant.totalReviews,
                           ),
-                        const Divider(),
-                        const SizedBox(height: 15),
-                        if (viewModel.reviews == null)
-                          const Center(child: CupertinoActivityIndicator())
-                        else
-                          ReviewList(reviews: viewModel.reviews),
-                      ],
-                    ),
+                        ),
+                      const Divider(),
+                      if (viewModel.canCreateReview)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: _CreateReviewButton(
+                            restaurantId: widget.restaurantId,
+                          ),
+                        ),
+                      const SizedBox(height: 15),
+                      if (viewModel.reviews == null)
+                        const Center(child: CupertinoActivityIndicator())
+                      else
+                        ReviewList(reviews: viewModel.reviews),
+                    ],
                   ),
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       );
 }
 
 @FunctionalData()
 class _ViewModel extends $_ViewModel {
   _ViewModel({
+    @required this.dispatcher,
+    @required this.user,
     @required this.restaurant,
     this.reviews,
   });
 
+  bool get canCreateReview => user.role == UserRole.user && !(reviews?.any((r) => r.user.id == user.id) ?? true);
+
+  final Dispatcher dispatcher;
+  final UserIdentity user;
   final RestaurantIdentity restaurant;
   final List<ReviewIdentity> reviews;
 }
@@ -163,8 +177,8 @@ class _AverageRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(left: 5),
-    child: Wrap(
+        padding: const EdgeInsets.only(left: 5),
+        child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 3,
           children: [
@@ -195,8 +209,23 @@ class _AverageRating extends StatelessWidget {
             ),
           ],
         ),
-  );
+      );
 
   final double averageRating;
   final int totalReviews;
+}
+
+class _CreateReviewButton extends StatelessWidget {
+  const _CreateReviewButton({
+    @required this.restaurantId,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => RaisedButton(
+        onPressed: () => showReviewCreationDialog(context, restaurantId: restaurantId),
+        child: const Text('Write a review'),
+      );
+
+  final String restaurantId;
 }

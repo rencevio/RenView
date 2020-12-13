@@ -69,6 +69,15 @@ Future<void> _middleware<State>(Store<State> store, dynamic action, Communicator
     } on Exception {
       print('Reviews for restaurant fetch failed!');
     }
+  } else if (action is CreateReviewAction) {
+    final review = await communicator.createReview(
+      restaurantId: action.restaurantId,
+      rating: action.rating,
+      visitDate: action.visitDate,
+      comment: action.comment.valueOr(() => null),
+    );
+
+    store.dispatch(ReviewCreatedAction(review: review.identity));
   }
 }
 

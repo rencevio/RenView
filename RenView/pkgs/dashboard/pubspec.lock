@@ -369,7 +369,7 @@ packages:
     source: hosted
     version: "1.9.2"
   plain_optional:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: plain_optional
       url: "https://pub.dartlang.org"

@@ -1,5 +1,6 @@
 import 'package:common_state/common_state.dart';
 import 'package:meta/meta.dart';
+import 'package:plain_optional/plain_optional.dart';
 
 import 'api_call_results.dart';
 
@@ -122,4 +123,29 @@ class ReviewsForRestaurantFetchedAction {
 
   final String restaurantId;
   final List<ReviewIdentity> reviews;
+}
+
+class CreateReviewAction {
+  CreateReviewAction({
+    @required this.restaurantId,
+    @required this.rating,
+    @required this.visitDate,
+    @required this.comment,
+  })  : assert(restaurantId != null),
+        assert(rating != null),
+        assert(visitDate != null),
+        assert(comment != null);
+
+  final String restaurantId;
+  final int rating;
+  final DateTime visitDate;
+  final Optional<String> comment;
+}
+
+class ReviewCreatedAction {
+  ReviewCreatedAction({
+    @required this.review,
+  }) : assert(review != null);
+
+  final ReviewIdentity review;
 }
