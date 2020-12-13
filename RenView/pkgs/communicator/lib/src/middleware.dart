@@ -87,6 +87,14 @@ Future<void> _middleware<State>(Store<State> store, dynamic action, Communicator
     );
   } else if (action is ReplyToReviewAction) {
     await communicator.replyToReview(reviewId: action.reviewId, reply: action.reply);
+  } else if (action is FetchPendingReviewsAction) {
+    final reviews = await communicator.fetchPendingReviews();
+
+    store.dispatch(
+      PendingReviewsFetchedAction(
+        reviews: reviews.reviews.map((r) => r.identity).toList(growable: false),
+      ),
+    );
   }
 }
 

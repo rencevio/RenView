@@ -177,3 +177,13 @@ class ReplyToReviewAction {
   final String reviewId;
   final String reply;
 }
+
+class FetchPendingReviewsAction {}
+
+class PendingReviewsFetchedAction {
+  PendingReviewsFetchedAction({
+    @required this.reviews,
+  }) : assert(reviews != null);
+
+  final List<ReviewIdentity> reviews;
+}

@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:utils/utils.dart';
 
-import '../actions.dart';
 import '../state.dart';
 import '../utils.dart';
 import 'elements.dart';
@@ -21,14 +20,21 @@ class FilterCriteria {
 }
 
 class RestaurantList extends StatefulWidget {
+  const RestaurantList({
+    @required this.onRefresh,
+    Key key,
+  }) : super(key: key);
+
   @override
   _RestaurantListState createState() => _RestaurantListState();
+
+  final void Function() onRefresh;
 }
 
 class _RestaurantListState extends State<RestaurantList> {
   final _refreshController = RefreshController();
 
-  void _onRefresh(Dispatcher dispatcher) => dispatcher(FetchRestaurantsAction());
+  void _onRefresh() => widget.onRefresh();
 
   @override
   Widget build(BuildContext context) => Consumer3<Dispatcher, DashboardState, FilterCriteria>(
@@ -56,7 +62,7 @@ class _RestaurantListState extends State<RestaurantList> {
                   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                   child: SmartRefresher(
                     controller: _refreshController,
-                    onRefresh: () => _onRefresh(dispatcher),
+                    onRefresh: _onRefresh,
                     child: ListView(
                       children: orderRestaurants(state.restaurants, orderCriteria: OrderCriteria.averageRating)
                           .where((r) => r.averageRating >= filerCriteria.rating)

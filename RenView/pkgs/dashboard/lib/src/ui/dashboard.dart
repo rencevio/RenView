@@ -1,9 +1,12 @@
 import 'package:common_state/common_state.dart';
+import 'package:communicator/communicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:utils/utils.dart';
 
+import '../actions.dart';
 import 'dashboard_action_sheet.dart';
 import 'dialogs/filter_dialog.dart';
 import 'owner_control_header.dart';
@@ -19,8 +22,8 @@ class _DashboardState extends State<Dashboard> {
   var _filterCriteria = FilterCriteria(rating: 0);
 
   @override
-  Widget build(BuildContext context) => Consumer<UserIdentity>(
-        builder: (context, userIdentity, _) => Scaffold(
+  Widget build(BuildContext context) => Consumer2<Dispatcher, UserIdentity>(
+        builder: (context, dispatcher, userIdentity, _) => Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(Style.appBarHeight),
             child: AppBar(
@@ -29,7 +32,7 @@ class _DashboardState extends State<Dashboard> {
                 onPressed: () async {
                   final selectedFilter = await showFilterDialog(context, _filterCriteria.rating);
 
-                  if (selectedFilter != _filterCriteria.rating) {
+                  if (selectedFilter != null && selectedFilter != _filterCriteria.rating) {
                     setState(() => _filterCriteria = FilterCriteria(rating: selectedFilter));
                   }
                 },
@@ -63,7 +66,12 @@ class _DashboardState extends State<Dashboard> {
                       const Divider(),
                     ],
                     const SizedBox(height: 10),
-                    Expanded(child: RestaurantList()),
+                    Expanded(child: RestaurantList(onRefresh: () {
+                      dispatcher(FetchRestaurantsAction());
+                      if (userIdentity.role == UserRole.owner) {
+                        dispatcher(FetchPendingReviewsAction());
+                      }
+                    },)),
                   ],
                 ),
               ),

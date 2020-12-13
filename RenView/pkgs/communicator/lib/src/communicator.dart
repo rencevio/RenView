@@ -193,6 +193,17 @@ class Communicator {
     await httpClient.request('POST', request);
   }
 
+  Future<Reviews> fetchPendingReviews() async {
+    final request = requestBuilder.build(
+      endpoint: 'reviews/pending',
+      authorized: true,
+    );
+
+    final response = await httpClient.request('GET', request);
+
+    return Reviews.fromJson(response.body as List<dynamic>);
+  }
+
   final RequestBuilder requestBuilder;
   final HttpClient httpClient;
 }

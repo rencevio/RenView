@@ -43,6 +43,13 @@ DashboardState dashboardReducer(DashboardState state, dynamic action) {
         reviews: state.reviews
             .map((r) => r.id == action.reviewId ? r.copyWith(reply: Optional(action.reply)) : r)
             .toList(growable: false));
+  } else if (action is PendingReviewsFetchedAction) {
+    return state.copyWith(
+      reviews: state.reviews
+          .where((existingReview) => !action.reviews.any((newReview) => existingReview.id == newReview.id))
+          .followedBy(action.reviews)
+          .toList(growable: false),
+    );
   }
 
   return state;

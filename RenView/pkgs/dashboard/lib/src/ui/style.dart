@@ -17,6 +17,7 @@ class Style {
   static const addRestaurantButtonBackgroundColor = Color.fromRGBO(107, 158, 72, 1.0);
 
   static const noPendingReviewsTextSize = 17.0;
+  static const pendingReviewsTextSize = 15.0;
 
   static const restaurantDetailsAddressTextSize = 17.0;
   static const restaurantDetailsLastReviewsToDisplay = 5;
