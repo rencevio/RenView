@@ -83,7 +83,6 @@ class _CreateEditReviewDialogState extends State<CreateEditReviewDialog> {
   final _formDateKey = GlobalKey<_DateFormFieldState>();
   final _formRatingKey = GlobalKey<_RatingFormFieldState>();
 
-
   @override
   void initState() {
     super.initState();
@@ -117,44 +116,46 @@ class _CreateEditReviewDialogState extends State<CreateEditReviewDialog> {
             builder: (context) {
               final width = MediaQuery.of(context).size.width;
 
-              return Form(
-                key: _formKey,
-                child: SizedBox(
-                  width: width,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _RatingFormField(
-                        key: _formRatingKey,
-                        initialValue: widget.rating,
-                        validator: (rating) => rating == null ? 'Please select rating' : null,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20, left: 5),
-                        child: _DateFormField(
-                          key: _formDateKey,
-                          initialValue: widget.visitDate,
-                          validator: (date) => date == null ? 'Please specify the date of visit' : null,
+              return SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: SizedBox(
+                    width: width,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _RatingFormField(
+                          key: _formRatingKey,
+                          initialValue: widget.rating,
+                          validator: (rating) => rating == null ? 'Please select rating' : null,
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxHeight: 200),
-                        child: TextFormField(
-                          maxLines: null,
-                          autocorrect: false,
-                          controller: _commentController,
-                          textInputAction: TextInputAction.done,
-                          decoration: const InputDecoration(
-                            labelText: 'Comment',
-                            hintText: 'Enter your comment here (optional)',
-                            prefixIcon: Icon(Icons.create),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20, left: 5),
+                          child: _DateFormField(
+                            key: _formDateKey,
+                            initialValue: widget.visitDate,
+                            validator: (date) => date == null ? 'Please specify the date of visit' : null,
                           ),
-                          validator: (value) => value.length > 200 ? 'Comment cannot exceed 200 characters' : null,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 10),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxHeight: 200),
+                          child: TextFormField(
+                            maxLines: null,
+                            autocorrect: false,
+                            controller: _commentController,
+                            textInputAction: TextInputAction.done,
+                            decoration: const InputDecoration(
+                              labelText: 'Comment',
+                              hintText: 'Enter your comment here (optional)',
+                              prefixIcon: Icon(Icons.create),
+                            ),
+                            validator: (value) => value.length > 200 ? 'Comment cannot exceed 200 characters' : null,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -296,7 +297,6 @@ class _RatingFormField extends FormField<int> {
 
 class _RatingFormFieldState extends FormFieldState<int> {
   int currentRating;
-
 
   @override
   void initState() {

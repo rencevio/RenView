@@ -95,6 +95,8 @@ Future<void> _middleware<State>(Store<State> store, dynamic action, Communicator
         reviews: reviews.reviews.map((r) => r.identity).toList(growable: false),
       ),
     );
+  } else if (action is ChangePasswordAction) {
+    await communicator.changePassword(userId: action.userId, newPassword: action.newPassword);
   }
 }
 

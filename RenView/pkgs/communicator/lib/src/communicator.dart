@@ -204,6 +204,18 @@ class Communicator {
     return Reviews.fromJson(response.body as List<dynamic>);
   }
 
+  Future<void> changePassword({@required String userId, @required String newPassword}) async {
+    final request = requestBuilder.build(
+      endpoint: 'users/$userId/password',
+      authorized: true,
+      body: <String, dynamic>{
+        'password': newPassword,
+      },
+    );
+
+    await httpClient.request('PUT', request);
+  }
+
   final RequestBuilder requestBuilder;
   final HttpClient httpClient;
 }

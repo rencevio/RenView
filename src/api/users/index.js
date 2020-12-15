@@ -142,7 +142,9 @@ router.put('/:id',
  * @apiError 404 User not found.
  */
 router.put('/:id/password',
-  passwordAuth(),
+  token({
+    required: true,
+  }),
   body({
     password
   }),

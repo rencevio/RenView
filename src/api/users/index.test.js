@@ -390,8 +390,8 @@ test('PUT /users/me/password 200 (user)', async () => {
     body
   } = await request(app())
     .put('' + '/me/password')
-    .auth('a@a.com', '123456')
     .send({
+      access_token: session1,
       password: '654321'
     })
   expect(status).toBe(200)
@@ -406,25 +406,13 @@ test('PUT /users/me/password 400 (user) - invalid password', async () => {
     body
   } = await request(app())
     .put('' + '/me/password')
-    .auth('a@a.com', '123456')
     .send({
+      access_token: session1,
       password: '321'
     })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
   expect(body.param).toBe('password')
-})
-
-test('PUT /users/me/password 401 (user) - invalid authentication method', async () => {
-  const {
-    status
-  } = await request(app())
-    .put('' + '/me/password')
-    .send({
-      access_token: session1,
-      password: '654321'
-    })
-  expect(status).toBe(401)
 })
 
 test('PUT /users/me/password 401', async () => {
@@ -444,8 +432,8 @@ test('PUT /users/:id/password 200 (user)', async () => {
     body
   } = await request(app())
     .put(`${''}/${user1.id}/password`)
-    .auth('a@a.com', '123456')
     .send({
+      access_token: session1,
       password: '654321'
     })
   expect(status).toBe(200)
@@ -460,8 +448,8 @@ test('PUT /users/:id/password 400 (user) - invalid password', async () => {
     body
   } = await request(app())
     .put(`${''}/${user1.id}/password`)
-    .auth('a@a.com', '123456')
     .send({
+      access_token: session1,
       password: '321'
     })
   expect(status).toBe(400)
@@ -474,20 +462,8 @@ test('PUT /users/:id/password 401 (user) - another user', async () => {
     status
   } = await request(app())
     .put(`${''}/${user1.id}/password`)
-    .auth('b@b.com', '123456')
     .send({
-      password: '654321'
-    })
-  expect(status).toBe(401)
-})
-
-test('PUT /users/:id/password 401 (user) - invalid authentication method', async () => {
-  const {
-    status
-  } = await request(app())
-    .put(`${''}/${user1.id}/password`)
-    .send({
-      access_token: session1,
+      access_token: session2,
       password: '654321'
     })
   expect(status).toBe(401)
@@ -509,8 +485,8 @@ test('PUT /users/:id/password 404 (user)', async () => {
     status
   } = await request(app())
     .put('' + '/123456789098765432123456/password')
-    .auth('a@a.com', '123456')
     .send({
+      access_token: session1,
       password: '654321'
     })
   expect(status).toBe(404)

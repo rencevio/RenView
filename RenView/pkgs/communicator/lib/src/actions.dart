@@ -187,3 +187,14 @@ class PendingReviewsFetchedAction {
 
   final List<ReviewIdentity> reviews;
 }
+
+class ChangePasswordAction {
+  ChangePasswordAction({
+    @required this.userId,
+    @required this.newPassword,
+  })  : assert(userId != null),
+        assert(newPassword != null);
+
+  final String userId;
+  final String newPassword;
+}
